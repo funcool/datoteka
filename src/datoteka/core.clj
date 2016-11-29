@@ -247,6 +247,11 @@
          perms (make-permissions perms)]
      (Files/createDirectories path attrs))))
 
+(defn delete-single
+  "Delete signle file if it exists."
+  [path]
+  (Files/deleteIfExists ^Path (pt/-path path)))
+
 (defn delete
   "Delete recursiverly a directory or file."
   [path]
