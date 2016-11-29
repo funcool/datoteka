@@ -22,21 +22,44 @@
 ;; OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(ns datoteka.backend.misc
-  "A local filesystem storage implementation."
+(ns datoteka.storages.misc
   (:require [promesa.core :as p]
             [cuerdas.core :as str]
-            [buddy.core.codecs :as codecs]
-            [buddy.core.codecs.base64 :as b64]
-            [buddy.core.nonce :as nonce]
-            [buddy.core.hash :as hash]
             [datoteka.proto :as pt]
             [datoteka.impl :as impl]
             [datoteka.storages.local :as local])
-  (:import java.io.InputStream
-           java.io.OutputStream
-           java.nio.file.Path
-           java.nio.file.Files))
+  (:import java.nio.file.Path
+           java.security.SecureRandom
+           java.security.MessageDigest
+           java.util.Base64))
+
+;; --- Helpers
+
+(defn- to-base64
+  [^bytes data]
+  (let [encoder (Base64/getUrlEncoder)]
+    (.encodeToString encoder data)))
+
+(defn- random-nonce
+  ([^long numbytes]
+   (random-nonce numbytes (SecureRandom.)))
+  ([^long numbytes ^SecureRandom sr]
+   (let [buffer (java.nio.ByteBuffer/allocate numbytes)]
+     (.putLong buffer (System/currentTimeMillis))
+     (.put buffer (random-bytes (.remaining buffer) sr))
+     (.array buffer))))
+
+(defn- sha256
+  [^bytes data]
+  (let [^MessageDigest md (MessageDigest/getInstance "SHA-256")]
+    (.update md data)
+    (.digest md)))
+
+(defn- random-hash
+  []
+  (-> (random-nonce 64)
+      (sha256)
+      (to-base64)))
 
 ;; --- Scoped Storage
 
@@ -85,10 +108,7 @@
 (defn- generate-path
   [^Path path]
   (let [name (str (.getFileName path))
-        hash (-> (nonce/random-nonce 128)
-                 (hash/blake2b-256)
-                 (b64/encode true)
-                 (codecs/bytes->str))
+        hash (random-hash)
         tokens (re-seq #"[\w\d\-\_]{3}" hash)
         path-tokens (take 6 tokens)
         rest-tokens (drop 6 tokens)
