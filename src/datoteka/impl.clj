@@ -25,8 +25,7 @@
 (ns datoteka.impl
   "Implementation details and helpers."
   (:require [datoteka.proto :as pt]
-            [datoteka.fs :as fs]
-            [buddy.core.codecs :as codecs]
+            [datoteka.core :as fs]
             [clojure.java.io :as io])
   (:import java.io.File
            java.io.ByteArrayInputStream
@@ -40,31 +39,12 @@
 (extend-protocol pt/IContent
   String
   (-input-stream [v]
-    (ByteArrayInputStream. (codecs/str->bytes v)))
+    (let [data (.getBytes v "UTF-8")]
+      (ByteArrayInputStream. ^bytes data)))
 
-  Path
+  Object
   (-input-stream [v]
-    (io/input-stream v))
-
-  File
-  (-input-stream [v]
-    (io/input-stream v))
-
-  URI
-  (-input-stream [v]
-    (io/input-stream v))
-
-  URL
-  (-input-stream [v]
-    (io/input-stream v))
-
-  InputStream
-  (-input-stream [v]
-    v)
-
-  ratpack.http.TypedData
-  (-input-stream [this]
-    (.getInputStream this)))
+    (io/input-stream v)))
 
 (extend-protocol pt/IUri
   URI
@@ -117,17 +97,3 @@
   (make-output-stream [path opts]
     (let [^OutputStream os (path->output-stream path)]
       (io/make-output-stream os opts))))
-
-(extend-type ratpack.http.TypedData
-  io/IOFactory
-  (make-reader [td opts]
-    (let [^InputStream is (.getInputStream td)]
-      (io/make-reader is opts)))
-  (make-writer [path opts]
-    (throw (UnsupportedOperationException. "read only object")))
-  (make-input-stream [td opts]
-    (let [^InputStream is (.getInputStream td)]
-      (io/make-input-stream is opts)))
-  (make-output-stream [path opts]
-    (throw (UnsupportedOperationException. "read only object"))))
-
