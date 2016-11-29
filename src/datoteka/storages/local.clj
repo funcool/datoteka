@@ -28,7 +28,6 @@
             [clojure.java.io :as io]
             [executors.core :as exec]
             [datoteka.proto :as pt]
-            [datoteka.impl :as impl]
             [datoteka.core :as fs])
   (:import java.io.InputStream
            java.io.OutputStream
@@ -54,29 +53,35 @@
         ^Path fullpath (normalize-path base path)]
     (when-not (fs/exists? (.getParent fullpath))
       (fs/create-dir! (.getParent fullpath)))
-    (with-open [^InputStream source (pt/-input-stream content)
-                ^OutputStream dest (Files/newOutputStream
-                                    fullpath fs/write-open-opts)]
-      (io/copy source dest)
+    (with-open [^InputStream src (io/input-stream content)
+                ^OutputStream dst (io/output-stream content)]
+      (io/copy src dst)
       path)))
 
 (defn- delete
   [base path]
   (let [path (->> (pt/-path path)
                   (normalize-path base))]
-    (Files/deleteIfExists ^Path path)))
+    (fs/delete-sigle path)))
 
-(defrecord LocalFileSystemBackend [^Path base ^URI baseuri]
+(defn- submit
+  [executor func]
+  (let [supplier (reify Supplier (get [_] (func)))]
+     (CompletableFuture/supplyAsync supplier executor)))
+
+(defrecord LocalFileSystemBackend [^Path base
+                                   ^URI baseuri
+                                   ^ExecutorService executor]
   pt/IPublicStorage
   (-public-uri [_ path]
     (.resolve baseuri (str path)))
 
   pt/IStorage
   (-save [_ path content]
-    (exec/submit (partial save base path content)))
+    (submit executor #(save base path content)))
 
   (-delete [_ path]
-    (exec/submit (partial delete base path)))
+    (submit executor #(delete base path)))
 
   (-exists? [this path]
     (try
@@ -89,8 +94,8 @@
 
   pt/IClearableStorage
   (-clear [_]
-    (fs/delete-dir! base)
-    (fs/create-dir! base))
+    (fs/delete base)
+    (fs/create-dir base))
 
   pt/ILocalStorage
   (-lookup [_ path']
@@ -108,7 +113,9 @@
   If that path does not exists it will be automatically created,
   if it exists but is not a directory, an exception will be
   raised."
-  [{:keys [basedir baseuri] :as keys}]
+  [{:keys [basedir baseuri executor]
+    :or {executor (ForkJoinPool/commonPool)}
+    :as keys}]
   (let [^Path basepath (pt/-path basedir)
         ^URI baseuri (pt/-uri baseuri)]
     (when (and (fs/exists? basepath)
@@ -116,7 +123,7 @@
       (throw (ex-info "File already exists." {})))
 
     (when-not (fs/exists? basepath)
-      (fs/create-dir! basepath))
+      (fs/create-dir basepath))
 
-    (->LocalFileSystemBackend basepath baseuri)))
+    (->LocalFileSystemBackend basepath baseuri executor)))
 
