@@ -26,14 +26,17 @@
   "A local filesystem storage implementation."
   (:require [promesa.core :as p]
             [clojure.java.io :as io]
-            [executors.core :as exec]
             [datoteka.proto :as pt]
             [datoteka.core :as fs])
   (:import java.io.InputStream
            java.io.OutputStream
            java.net.URI
            java.nio.file.Path
-           java.nio.file.Files))
+           java.nio.file.Files
+           java.util.function.Supplier
+           java.util.concurrent.CompletableFuture
+           java.util.concurrent.ExecutorService
+           java.util.concurrent.ForkJoinPool))
 
 (defn normalize-path
   [^Path base ^Path path]
@@ -52,9 +55,9 @@
   (let [^Path path (pt/-path path)
         ^Path fullpath (normalize-path base path)]
     (when-not (fs/exists? (.getParent fullpath))
-      (fs/create-dir! (.getParent fullpath)))
-    (with-open [^InputStream src (io/input-stream content)
-                ^OutputStream dst (io/output-stream content)]
+      (fs/create-dir (.getParent fullpath)))
+    (with-open [^InputStream src (pt/-input-stream content)
+                ^OutputStream dst (io/output-stream fullpath)]
       (io/copy src dst)
       path)))
 

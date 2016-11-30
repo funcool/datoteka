@@ -24,9 +24,7 @@
 
 (ns datoteka.storages.misc
   (:require [promesa.core :as p]
-            [cuerdas.core :as str]
             [datoteka.proto :as pt]
-            [datoteka.impl :as impl]
             [datoteka.storages.local :as local])
   (:import java.nio.file.Path
            java.security.SecureRandom
@@ -40,14 +38,13 @@
   (let [encoder (Base64/getUrlEncoder)]
     (.encodeToString encoder data)))
 
-(defn- random-nonce
+(defn- random-bytes
   ([^long numbytes]
-   (random-nonce numbytes (SecureRandom.)))
+   (random-bytes numbytes (SecureRandom.)))
   ([^long numbytes ^SecureRandom sr]
-   (let [buffer (java.nio.ByteBuffer/allocate numbytes)]
-     (.putLong buffer (System/currentTimeMillis))
-     (.put buffer (random-bytes (.remaining buffer) sr))
-     (.array buffer))))
+   (let [buffer (byte-array numbytes)]
+     (.nextBytes sr buffer)
+     buffer)))
 
 (defn- sha256
   [^bytes data]
@@ -57,7 +54,7 @@
 
 (defn- random-hash
   []
-  (-> (random-nonce 64)
+  (-> (random-bytes 64)
       (sha256)
       (to-base64)))
 
