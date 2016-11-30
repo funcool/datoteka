@@ -347,9 +347,6 @@
   String
   (-uri [v] (URI. v)))
 
-(def ^:private empty-string-array
-  (make-array String 0))
-
 (extend-protocol pt/IPath
   Path
   (-path [v] v)
@@ -359,9 +356,6 @@
 
   URL
   (-path [v] (Paths/get (.toURI v)))
-
-  String
-  (-path [v] (Paths/get v empty-string-array))
 
   clojure.lang.Sequential
   (-path [v]
