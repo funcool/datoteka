@@ -25,8 +25,16 @@
 (ns datoteka.core
   "File System helpers."
   (:refer-clojure :exclude [name resolve])
-  (:require [datoteka.proto :as pt])
-  (:import java.nio.file.Path
+  (:require [datoteka.proto :as pt]
+            [clojure.java.io :as io])
+  (:import java.io.Writer
+           java.io.File
+           java.io.InputStream
+           java.net.URL
+           java.net.URI
+           java.io.ByteArrayInputStream
+           java.nio.file.Path
+           java.nio.file.Paths
            java.nio.file.Files
            java.nio.file.LinkOption
            java.nio.file.OpenOption
@@ -36,8 +44,7 @@
            java.nio.file.SimpleFileVisitor
            java.nio.file.FileVisitResult
            java.nio.file.attribute.FileAttribute
-           java.nio.file.attribute.PosixFilePermissions
-           ratpack.form.UploadedFile))
+           java.nio.file.attribute.PosixFilePermissions))
 
 (def ^:dynamic *cwd* (.getCanonicalPath (java.io.File. ".")))
 (def ^:dynamic *sep* (System/getProperty "file.separator"))
@@ -201,14 +208,6 @@
   (.relativize ^Path (pt/-path path1)
                ^Path (pt/-path path2)))
 
-(defmethod print-method Path
-  [^Path v ^Writer w]
-  (.write w (str "#path:\"" (.toString v) "\"")))
-
-(defmethod print-method File
-  [^File v ^Writer w]
-  (.write w (str "#file:\"" (.toString v) "\"")))
-
 (defn to-file
   "Converts the path to a java.io.File instance."
   [path]
@@ -298,3 +297,79 @@
               output (java.io.ByteArrayOutputStream. (.available input))]
     (io/copy input output)
     (.toByteArray output)))
+
+
+;; --- Implementation
+
+(defmethod print-method Path
+  [^Path v ^Writer w]
+  (.write w (str "#path \"" (.toString v) "\"")))
+
+(defmethod print-method File
+  [^File v ^Writer w]
+  (.write w (str "#file \"" (.toString v) "\"")))
+
+(extend-protocol pt/IContent
+  String
+  (-input-stream [v]
+    (let [data (.getBytes v "UTF-8")]
+      (ByteArrayInputStream. ^bytes data)))
+
+  Object
+  (-input-stream [v]
+    (io/input-stream v)))
+
+(extend-protocol pt/IUri
+  URI
+  (-uri [v] v)
+
+  String
+  (-uri [v] (URI. v)))
+
+(def ^:private empty-string-array
+  (make-array String 0))
+
+(extend-protocol pt/IPath
+  Path
+  (-path [v] v)
+
+  URI
+  (-path [v] (Paths/get v))
+
+  URL
+  (-path [v] (Paths/get (.toURI v)))
+
+  String
+  (-path [v] (Paths/get v empty-string-array))
+
+  clojure.lang.Sequential
+  (-path [v]
+    (reduce #(.resolve %1 %2)
+            (pt/-path (first v))
+            (map pt/-path (rest v)))))
+
+(defn- path->input-stream
+  [^Path path]
+  (let [opts (interpret-open-opts #{:read})]
+    (Files/newInputStream path opts)))
+
+(defn- path->output-stream
+  [^Path path]
+  (let [opts (interpret-open-opts #{:truncate :create :write})]
+    (Files/newOutputStream path opts)))
+
+(extend-type Path
+  io/IOFactory
+  (make-reader [path opts]
+    (let [^InputStream is (path->input-stream path)]
+      (io/make-reader is opts)))
+  (make-writer [path opts]
+    (let [^OutputStream os (path->output-stream path)]
+      (io/make-writer os opts)))
+  (make-input-stream [path opts]
+    (let [^InputStream is (path->input-stream path)]
+      (io/make-input-stream is opts)))
+  (make-output-stream [path opts]
+    (let [^OutputStream os (path->output-stream path)]
+      (io/make-output-stream os opts))))
+
