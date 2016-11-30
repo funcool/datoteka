@@ -55,7 +55,7 @@
 (def ^:dynamic *cwd* (pt/-path (.getCanonicalPath (java.io.File. "."))))
 (def ^:dynamic *sep* (System/getProperty "file.separator"))
 (def ^:dynamic *home* (pt/-path (System/getProperty "user.home")))
-(def ^:dynamic *tmp-dir (pt/-path (System/getProperty "java.io.tmpdir")))
+(def ^:dynamic *tmp-dir* (pt/-path (System/getProperty "java.io.tmpdir")))
 (def ^:dynamic *no-follow* (LinkOption/values))
 (def ^:dynamic *os-name* (System/getProperty "os.name"))
 (def ^:dynamic *system* (if (.startsWith *os-name* "Windows") :dos :unix))
