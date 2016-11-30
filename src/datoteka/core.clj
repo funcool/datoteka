@@ -170,7 +170,7 @@
   [path]
   (str (.getFileName ^Path (pt/-path path))))
 
-(defn split-extension
+(defn split-ext
   "Returns a vector of `[name extension]`."
   [path]
   (let [base (name path)
@@ -238,23 +238,20 @@
   [path]
   (filter regular-file? (list-directory path)))
 
-
-;; --- Side-Effectfull Operations
-
 (defn create-tempdir
   "Creates a temp directory on the filesystem."
   ([]
-   (create-tmpdir ""))
+   (create-tempdir ""))
   ([prefix]
    (Files/createTempDirectory prefix (make-array FileAttribute 0))))
 
 (defn create-dir
   "Create a new directory."
-  ([path] (create-dir! path "rwxr-xr-x"))
+  ([path] (create-dir path "rwxr-xr-x"))
   ([path perms]
    {:pre [(string? perms)]}
    (let [^Path path (pt/-path path)
-         perms (make-permissions perms)]
+         attrs (make-permissions perms)]
      (Files/createDirectories path attrs))))
 
 (defn delete-single
@@ -301,7 +298,7 @@
 (defn create-tempfile
   "Create a temporal file."
   [& {:keys [suffix prefix]}]
-  (->> (make-file-attrs "rwxr-xr-x")
+  (->> (make-permissions "rwxr-xr-x")
        (Files/createTempFile prefix suffix)))
 
 (defn slurp-bytes

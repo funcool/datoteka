@@ -62,7 +62,7 @@
   [base path]
   (let [path (->> (pt/-path path)
                   (normalize-path base))]
-    (fs/delete-sigle path)))
+    (fs/delete-single path)))
 
 (defn- submit
   [executor func]

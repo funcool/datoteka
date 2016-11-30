@@ -22,10 +22,9 @@
 ;; OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(ns datoteka.core
+(ns datoteka.storages
   "A datoteka abstraction layer."
-  (:require [datoteka.proto :as pt]
-            [datoteka.impl]))
+  (:require [datoteka.proto :as pt]))
 
 (defn save
   "Perists a file or bytes in the storage. This function
