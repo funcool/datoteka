@@ -30,9 +30,7 @@
   (:import java.io.File
            org.apache.commons.io.FileUtils))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Test Fixtures
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; --- Test Fixtures
 
 (defn- clean-temp-directory
   [next]
@@ -76,12 +74,12 @@
     (t/is @(st/delete storage rpath))
     (t/is (not @(st/exists? storage rpath)))))
 
-(t/deftest test-localfs-store-duplicate-file-raises-exception
-  (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
-                                :baseuri "http://localhost:5050/"})]
-    (t/is @(st/save storage "test.txt" "my content"))
-    (t/is (thrown? java.util.concurrent.ExecutionException
-                   @(st/save storage "test.txt" "my content")))))
+;; (t/deftest test-localfs-store-duplicate-file-raises-exception
+;;   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
+;;                                 :baseuri "http://localhost:5050/"})]
+;;     (t/is @(st/save storage "test.txt" "my content"))
+;;     (t/is (thrown? java.util.concurrent.ExecutionException
+;;                    @(st/save storage "test.txt" "my content")))))
 
 (t/deftest test-localfs-access-unauthorized-path
   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
@@ -111,13 +109,13 @@
     (t/is @(st/delete storage rpath))
     (t/is (not @(st/exists? storage rpath)))))
 
-(t/deftest test-localfs-scoped-store-duplicate-file-raises-exception
-  (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
-                                :baseuri "http://localhost:5050/"})
-        storage (misc/scoped storage "some/prefix")]
-    (t/is @(st/save storage "test.txt" "my content"))
-    (t/is (thrown? java.util.concurrent.ExecutionException
-                   @(st/save storage "test.txt" "my content")))))
+;; (t/deftest test-localfs-scoped-store-duplicate-file-raises-exception
+;;   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
+;;                                 :baseuri "http://localhost:5050/"})
+;;         storage (misc/scoped storage "some/prefix")]
+;;     (t/is @(st/save storage "test.txt" "my content"))
+;;     (t/is (thrown? java.util.concurrent.ExecutionException
+;;                    @(st/save storage "test.txt" "my content")))))
 
 (t/deftest test-localfs-scoped-access-unauthorized-path
   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"

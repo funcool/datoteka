@@ -52,6 +52,8 @@
 
 (defn- save
   [base path content]
+  ;; TODO: rename the file if it is already exists, the current
+  ;; implementation just silently overwrites the file.
   (let [^Path path (pt/-path path)
         ^Path fullpath (normalize-path base path)]
     (when-not (fs/exists? (.getParent fullpath))
