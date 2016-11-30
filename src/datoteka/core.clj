@@ -170,7 +170,7 @@
     (->> (Files/getPosixFilePermissions path *no-follow*)
          (PosixFilePermissions/toString))))
 
-(defn parent-directory
+(defn parent
   "Get parent path if it exists."
   [path]
   (.getParent ^Path (pt/-path path)))
