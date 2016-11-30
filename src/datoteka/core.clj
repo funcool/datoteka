@@ -109,6 +109,11 @@
   [v]
   (instance? Path v))
 
+(defn file?
+  "Check if `v` is an instance of java.io.File"
+  [v]
+  (instance? File v))
+
 (defn absolute?
   "Checks if the provided path is absolute."
   [path]
