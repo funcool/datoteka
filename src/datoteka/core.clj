@@ -46,10 +46,16 @@
            java.nio.file.attribute.FileAttribute
            java.nio.file.attribute.PosixFilePermissions))
 
-(def ^:dynamic *cwd* (.getCanonicalPath (java.io.File. ".")))
+(def ^:private empty-string-array (make-array String 0))
+
+(extend-type String
+  pt/IPath
+  (-path [v] (Paths/get v empty-string-array)))
+
+(def ^:dynamic *cwd* (pt/-path (.getCanonicalPath (java.io.File. "."))))
 (def ^:dynamic *sep* (System/getProperty "file.separator"))
-(def ^:dynamic *home* (System/getProperty "user.home"))
-(def ^:dynamic *tmp-dir (System/getProperty "java.io.tmpdir"))
+(def ^:dynamic *home* (pt/-path (System/getProperty "user.home")))
+(def ^:dynamic *tmp-dir (pt/-path (System/getProperty "java.io.tmpdir")))
 (def ^:dynamic *no-follow* (LinkOption/values))
 (def ^:dynamic *os-name* (System/getProperty "os.name"))
 (def ^:dynamic *system* (if (.startsWith *os-name* "Windows") :dos :unix))
