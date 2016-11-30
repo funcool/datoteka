@@ -61,23 +61,34 @@
   ([fst & more]
    (pt/-path (cons fst more))))
 
-;; (def write-open-opts
-;;   (->> [StandardOpenOption/TRUNCATE_EXISTING
-;;         StandardOpenOption/CREATE
-;;         StandardOpenOption/WRITE]
-;;        (into-array OpenOption)))
+(def ^:private open-opts-map
+  {:truncate StandardOpenOption/TRUNCATE_EXISTING
+   :create StandardOpenOption/CREATE
+   :append StandardOpenOption/APPEND
+   :create-new StandardOpenOption/CREATE_NEW
+   :delete-on-close StandardOpenOption/DELETE_ON_CLOSE
+   :dsync StandardOpenOption/DSYNC
+   :read StandardOpenOption/READ
+   :write StandardOpenOption/WRITE
+   :sparse StandardOpenOption/SPARSE
+   :sync StandardOpenOption/SYNC})
 
-;; (def read-open-opts
-;;   (->> [StandardOpenOption/READ]
-;;        (into-array OpenOption)))
+(def ^:private copy-opts-map
+  {:atomic StandardCopyOption/ATOMIC_MOVE
+   :replace StandardCopyOption/REPLACE_EXISTING
+   :copy-attributes StandardCopyOption/COPY_ATTRIBUTES})
 
-;; (def moveo-opts
-;;   (->> [StandardCopyOption/ATOMIC_MOVE
-;;         StandardCopyOption/REPLACE_EXISTING]
-;;        (into-array CopyOption)))
+(defn- interpret-open-opts
+  [opts]
+  {:pre [(every? open-opts-map opts)]}
+  (->> (map open-opts-map opts)
+       (into-array OpenOption)))
 
-;; (def follow-link-opts
-;;   (into-array LinkOption [LinkOption/NOFOLLOW_LINKS]))
+(defn- interpret-copy-opts
+  [opts]
+  {:pre [(every? copy-opts-map opts)]}
+  (->> (map copy-opts-map opts)
+       (into-array CopyOption)))
 
 (defn make-permissions
   "Generate a array of `FileAttribute` instances
@@ -107,13 +118,13 @@
   "Check if the provided path exists."
   [path]
   (let [^Path path (pt/-path path)]
-    (Files/exists path follow-link-opts)))
+    (Files/exists path *no-follow*)))
 
 (defn directory?
   "Checks if the provided path is a directory."
   [path]
   (let [^Path path (pt/-path path)]
-    (Files/isDirectory path follow-link-opts)))
+    (Files/isDirectory path *no-follow*)))
 
 (defn regular-file?
   "Checks if the provided path is a plain file."
@@ -280,10 +291,12 @@
   require moving the entries in the directory. When moving a directory
   requires that its entries be moved then this method fails (by
   throwing an IOException)."
-  [src dst]
-  (let [^Path src (-path src)
-        ^Path dst (-path dst)]
-    (Files/move src dst move-opts)))
+  ([src dst] (move src dst #{:atomic :replace}))
+  ([src dst flags]
+   (let [^Path src (pt/-path src)
+         ^Path dst (pt/-path dst)
+         opts (interpret-copy-opts flags)]
+    (Files/move src dst opts))))
 
 (defn create-tempfile
   "Create a temporal file."
