@@ -193,7 +193,7 @@
 (defn extension
   "Return the extension part of a file."
   [path]
-  (last (split-ext path)))
+  (subs (last (split-ext path)) 1))
 
 (defn base-name
   "Return the name part of a file."
