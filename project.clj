@@ -1,4 +1,4 @@
-(defproject funcool/datoteka "1.0.0"
+(defproject funcool/datoteka "1.0.0-SNAPSHOT"
   :description "Filesystem utilities and Storage abstraction for Clojure."
   :url "https://github.com/funcool/datoteka"
   :license {:name "BSD (2-Clause)"
