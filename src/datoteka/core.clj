@@ -197,15 +197,11 @@
        (subs path-str i)]
       [path-str nil])))
 
-(defn extension
+(defn ext
   "Return the extension part of a file."
   [path]
-  (subs (last (split-ext path)) 1))
-
-(defn base-name
-  "Return the name part of a file."
-  [path]
-  (first (split-ext path)))
+  (some-> (last (split-ext path))
+          (subs 1)))
 
 (defn normalize
   "Normalize the path."
