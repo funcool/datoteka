@@ -120,6 +120,11 @@
   (let [^Path path (pt/-path path)]
     (.isAbsolute path)))
 
+(defn relative?
+  "Check if the provided path is relative."
+  [path]
+  (not (absolute? path)))
+
 (defn executable?
   "Checks if the provided path is executable."
   [path]
