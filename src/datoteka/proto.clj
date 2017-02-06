@@ -1,4 +1,4 @@
-;; Copyright (c) 2015-2016 Andrey Antukh <niwi@niwi.nz>
+;; Copyright (c) 2015-2017 Andrey Antukh <niwi@niwi.nz>
 ;; All rights reserved.
 ;;
 ;; Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@
 
 (defprotocol IStorage
   "A basic abstraction for storage access."
+  (-lookup [_ path] "Resolves the path to the local filesystem.")
   (-save [_ path content] "Persist the content under specified path.")
   (-delete [_ path] "Delete the file by its path.")
   (-exists? [_ path] "Check if file exists by path."))
@@ -45,9 +46,6 @@
 
 (defprotocol IPublicStorage
   (-public-uri [_ path] "Get a public accessible uri for path."))
-
-(defprotocol ILocalStorage
-  (-lookup [_ path] "Resolves the path to the local filesystem."))
 
 (defprotocol IStorageIntrospection
   (-accessed-time [_ path] "Return the last accessed time of the file.")

@@ -1,4 +1,4 @@
-;; Copyright (c) 2015-2016 Andrey Antukh <niwi@niwi.nz>
+;; Copyright (c) 2015-2017 Andrey Antukh <niwi@niwi.nz>
 ;; All rights reserved.
 ;;
 ;; Redistribution and use in source and binary forms, with or without
@@ -97,19 +97,19 @@
       (catch Exception e
         (p/rejected e))))
 
-  pt/IClearableStorage
-  (-clear [_]
-    (fs/delete base)
-    (fs/create-dir base))
-
-  pt/ILocalStorage
   (-lookup [_ path']
     (try
       (p/resolved
        (->> (pt/-path path')
             (normalize-path base)))
       (catch Exception e
-        (p/rejected e)))))
+        (p/rejected e))))
+
+  pt/IClearableStorage
+  (-clear [_]
+    (fs/delete base)
+    (fs/create-dir base)))
+
 
 (defn localfs
   "Create an instance of local FileSystem storage providing an
@@ -131,4 +131,3 @@
       (fs/create-dir basepath))
 
     (->LocalFileSystemBackend basepath baseuri executor)))
-

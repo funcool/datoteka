@@ -1,4 +1,4 @@
-;; Copyright (c) 2015-2016 Andrey Antukh <niwi@niwi.nz>
+;; Copyright (c) 2015-2017 Andrey Antukh <niwi@niwi.nz>
 ;; All rights reserved.
 ;;
 ;; Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@
   the local filesystem absolute path to it.
   This method may be not implemented in all datoteka."
   [storage path]
-  {:pre [(satisfies? pt/ILocalStorage storage)]}
   (pt/-lookup storage path))
 
 (defn exists?
