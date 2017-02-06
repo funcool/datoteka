@@ -6,20 +6,16 @@
 
 ;; --- Development Stuff
 
-(defn test-vars
-  [& vars]
-  (repl/refresh)
-  (test/test-vars
-   (map (fn [sym]
-          (require (symbol (namespace sym)))
-          (resolve sym))
-        vars)))
+(defn test
+  ([] (test #"^datoteka.tests.*"))
+  ([o]
+   (repl/refresh)
+   (cond
+     (instance? java.util.regex.Pattern o)
+     (test/run-all-tests o)
 
-(defn test-ns
-  [ns]
-  (repl/refresh)
-  (test/test-ns ns))
-
-(defn test-all
-  ([] (test/run-all-tests #"^datoteka.tests.*"))
-  ([re] (test/run-all-tests re)))
+     (symbol? o)
+     (if-let [sns (namespace o)]
+       (do (require (symbol sns))
+           (test/test-vars [(resolve o)]))
+       (test/test-ns o)))))
