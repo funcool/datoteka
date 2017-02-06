@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.5">
+<meta name="author" content="Andrey Antukh, &lt;niwi@niwi.nz&gt;">
+<title>datoteka</title>
+<style>
+.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments, .listingblock .pygments code { background: #f0f0f0; }
+.listingblock .pygments .tok-c { color: #60a0b0; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #007020; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-ch { color: #60a0b0; font-style: italic } /* Comment.Hashbang */
+.listingblock .pygments .tok-cm { color: #60a0b0; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #007020 } /* Comment.Preproc */
+.listingblock .pygments .tok-cpf { color: #60a0b0; font-style: italic } /* Comment.PreprocFile */
+.listingblock .pygments .tok-c1 { color: #60a0b0; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #60a0b0; background-color: #fff0f0 } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #c65d09; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #007020 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #902000 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #40a070 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #4070a0 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #4070a0 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #007020 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0e84b5; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #60add5 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #555555; font-weight: bold } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #d55537; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #007020 } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #06287e } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #002070; font-weight: bold } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0e84b5; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #062873; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #bb60d5 } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #007020; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #40a070 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #40a070 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #40a070 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #40a070 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #40a070 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sa { color: #4070a0 } /* Literal.String.Affix */
+.listingblock .pygments .tok-sb { color: #4070a0 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #4070a0 } /* Literal.String.Char */
+.listingblock .pygments .tok-dl { color: #4070a0 } /* Literal.String.Delimiter */
+.listingblock .pygments .tok-sd { color: #4070a0; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #4070a0 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #4070a0; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #4070a0 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #70a0d0; font-style: italic } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #c65d09 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #235388 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #4070a0 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #517918 } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #007020 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-fm { color: #06287e } /* Name.Function.Magic */
+.listingblock .pygments .tok-vc { color: #bb60d5 } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #bb60d5 } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #bb60d5 } /* Name.Variable.Instance */
+.listingblock .pygments .tok-vm { color: #bb60d5 } /* Name.Variable.Magic */
+.listingblock .pygments .tok-il { color: #40a070 } /* Literal.Number.Integer.Long */
+</style>
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Liberation+Mono:400|Roboto+Slab:400,700"/>
+<link rel="stylesheet"
+      href="https://www.niwi.nz/_assets/asciidoctor-styles/simple-red-titles/stylesheet.css"/>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>datoteka</h1>
+<div class="details">
+<span id="author" class="author">Andrey Antukh, &lt;niwi@niwi.nz&gt;</span><br>
+<span id="revdate">0.1.0</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#install">Install</a></li>
+<li><a href="#user-guide">User Guide</a>
+<ul class="sectlevel2">
+<li><a href="#path-filesystem">Path &amp; Filesystem</a></li>
+<li><a href="#storages">Storages</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</li>
+<li><a href="#developers-guide">Developers Guide</a>
+<ul class="sectlevel2">
+<li><a href="#philosophy">Philosophy</a></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#source-code">Source Code</a></li>
+<li><a href="#run-tests">Run tests</a></li>
+</ul>
+</li>
+<li><a href="#license">License</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="introduction"><a class="link" href="#introduction">Introduction</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A filesystem toolset and storage implementation for Clojure. In one
+side you have a collection of functions for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>work with paths (creating and manipulating).</p>
+</li>
+<li>
+<p>work with filesystem (files and directories crud and many predicates).</p>
+</li>
+<li>
+<p>IO (clojure.java.io implementation for paths).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>And on the other side it provides a <strong>Storage</strong> abstraction, that facilitates abstract
+filesystem access under uniform api for web-applications.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="install"><a class="link" href="#install">Install</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Add the following dependency to your project.clj file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">[</span><span class="tok-nv">funcool/datoteka</span> <span class="tok-s">&quot;0.1.0&quot;</span><span class="tok-p">]</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="user-guide"><a class="link" href="#user-guide">User Guide</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="path-filesystem"><a class="link" href="#path-filesystem">Path &amp; Filesystem</a></h3>
+<div class="paragraph">
+<p>The path and filesystem helper functions are all exposed under the <code>datoteka.core</code> namespace, so let&#8217;s import it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">datoteka.core</span> <span class="tok-ss">:as</span> <span class="tok-nv">fs</span><span class="tok-p">])</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This library uses JVM NIO, so under the hood, the <code>java.nio.file.Path</code> is used instead of classical <code>java.io.File</code>.
+And then, you have many ways to create a <strong>path</strong> instance. The basic one is just using the <code>path</code> function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can observe, the path properly prints with a <strong>data reader</strong>, so once you have imported the library, you can
+use the <code>#path "/tmp"</code> syntax to create paths.</p>
+</div>
+<div class="paragraph">
+<p>The paths also can be created from a varios kind of objects (such as URI, URL, String and seq&#8217;s):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-p">(</span><span class="tok-nf">java.net.URI.</span> <span class="tok-s">&quot;file:///tmp&quot;</span><span class="tok-p">))</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-p">(</span><span class="tok-nf">java.net.URL.</span> <span class="tok-s">&quot;file:///tmp&quot;</span><span class="tok-p">))</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-p">[</span><span class="tok-s">&quot;/tmp&quot;</span> <span class="tok-s">&quot;foo&quot;</span><span class="tok-p">])</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/foo&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>path</code> function is also variadic, so you can pass multiple arguments to it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-s">&quot;/tmp&quot;</span> <span class="tok-s">&quot;foo&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/foo&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-p">(</span><span class="tok-nf">java.net.URI.</span> <span class="tok-s">&quot;file:///tmp&quot;</span><span class="tok-p">)</span> <span class="tok-s">&quot;foo&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/foo&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And for convenience, in can use the <code>clojure.java.io</code> api with paths in the same way as you
+have done it with <code>java.io.File</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">clojure.java.io</span> <span class="tok-ss">:as</span> <span class="tok-nv">io</span><span class="tok-p">])</span>
+
+<span class="tok-p">(</span><span class="tok-nf">io/reader</span> <span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-s">&quot;/etc/inputrc&quot;</span><span class="tok-p">))</span>
+<span class="tok-c1">;; =&gt; #object[java.io.BufferedReader 0x203dc326 &quot;java.io.BufferedReader@203dc326&quot;]</span>
+
+<span class="tok-p">(</span><span class="tok-nb">subs </span><span class="tok-p">(</span><span class="tok-nf">io/slurp</span> <span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-s">&quot;/etc/inputrc&quot;</span><span class="tok-p">))</span> <span class="tok-mi">0</span> <span class="tok-mi">20</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; &quot;# do not bell on tab&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Look on the <a href="#reference">reference</a> section for the complete documentation
+of all available functions and predicates.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="storages"><a class="link" href="#storages">Storages</a></h3>
+<div class="paragraph">
+<p>On the contrary to the raw filesystem manipulation functions, the
+storages abstraction offers a thin and carefully designed api for
+implement mostly generic file storage abstraction. It is designed
+mainly for web applications in mind but is not strictly limited to it.</p>
+</div>
+<div class="paragraph">
+<p>But, <strong>why I need this?</strong> you may be asking yourself&#8230;&#8203; the storage api
+allows you work with files (such that file uploads as a good example)
+starting with storing them on local filesystem and then easily switch
+to a cloud based storage (such that AWS S3 or any other) just
+providing an implementation for the very restricted and small storage
+api.</p>
+</div>
+<div class="paragraph">
+<p>The <code>datoteka</code> comes by default with a <strong>local filesystem</strong> storage as
+base storage and many other that stacks on top of other storages and
+provides additional functionality.</p>
+</div>
+<div class="paragraph">
+<p>The main api for work with storages is exposed under <code>datoteka.storages</code>
+namespace and it consists mainly on this functions: <code>save</code>, <code>lookup</code>,
+<code>exists?</code>, <code>delete</code> and <code>public-url</code> (it has some other functions but
+they are not relevant for now).</p>
+</div>
+<div class="sect3">
+<h4 id="local-filesystem-storage"><a class="link" href="#local-filesystem-storage">Local FileSystem Storage</a></h4>
+<div class="paragraph">
+<p>The local storage is a default implementation of stroage abstraction
+that stores the files in a local file system. Let create an instance
+of it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">datoteka.storages</span> <span class="tok-ss">:as</span> <span class="tok-nv">st</span><span class="tok-p">])</span>
+<span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">datoteka.storages.local</span> <span class="tok-ss">:refer</span> <span class="tok-p">[</span><span class="tok-nv">localfs</span><span class="tok-p">]])</span>
+
+<span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">storage</span>
+  <span class="tok-p">(</span><span class="tok-nf">localfs</span> <span class="tok-p">{</span><span class="tok-ss">:basedir</span> <span class="tok-s">&quot;/tmp/&quot;</span>
+            <span class="tok-ss">:baseuri</span> <span class="tok-s">&quot;http://localhost/media/&quot;</span><span class="tok-p">}))</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let save some data using the storage api:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/save</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span> <span class="tok-s">&quot;some-content&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;test-file.txt&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>save</code> function returns a promise (an instance of
+CompletableFuture) with the final path relative to the provided
+<code>:basedir</code> to the storage.</p>
+</div>
+<div class="paragraph">
+<p>If you application works in a synchronous way, just use the <code>@</code> or
+<code>deref</code> function. It blocks the current thread until the underlying
+operation is finished. And if you application has asynchronous
+workflow, you can just use <code>funcool/promesa</code> for work with promises in
+more comfortable way.</p>
+</div>
+<div class="paragraph">
+<p>This approach allows easily use the storage api in both possible
+workflows.</p>
+</div>
+<div class="paragraph">
+<p>Now, let see what is happens if you try to store the same file again:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-nv">user=&gt;</span> <span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/save</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span> <span class="tok-s">&quot;some-content&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;test-file1.txt&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can observe, the storage handles duplicates for you. You don&#8217;t
+need to worry about the filenames, if duplicate name is used, an other
+name will be automatically choiced.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+at this moment the incremental integer is used for choice a new
+name but this can no longer be valid on next version. You should
+always rely on the return value of <code>save</code> function instead of having
+the supposition that the strategy of choicing new name will be the
+same.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The 3rd argument to the <code>save</code> function represents the content
+of the file. It accepts anything that can be coerced to InputStream
+with <code>clojure.java.io/input-stream</code> with the small exception for
+strings, that instead interpret them as paths it interpret them
+as content.</p>
+</div>
+<div class="paragraph">
+<p>You can check if some file exists with the <code>st/exists?</code> predicate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/exists?</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span>
+
+<span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/exists?</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;other.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also, you can lookup the file in the storage by the relative path:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/lookup</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/test-file.txt&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The return value of lookup is a promise resolved with the absolute
+path on the local filesystem. And if you are working in a web
+application, the <code>public-url</code> is your friend:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">st/public-url</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; object[java.net.URI 0xa215deb &quot;http://localhost/media/test-file.txt&quot;]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This function just return a concatenation of the relative path of the
+file with the provided URI on <code>:baseuri</code> option on storage
+constructor.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+In summary, this allows persist files in local file system and
+store relative paths on the database, which in turn allows future
+filesystem relocation without worrying about the need of any change on
+your code or the database.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Additionally to the explained functions, there are the <code>delete</code> function
+that given relative path or file name tries removing it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/delete</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span>
+
+<span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/delete</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="scoped-storage"><a class="link" href="#scoped-storage">Scoped Storage</a></h4>
+<div class="paragraph">
+<p>The <strong>scoped</strong> storage is considered stacked storage because it works on top of an other storage
+implmentation, just adding an additional feature to it. In this case just scoping the main
+storage base directory by a prefix.</p>
+</div>
+<div class="paragraph">
+<p>Let see an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">datoteka.storages</span> <span class="tok-ss">:as</span> <span class="tok-nv">st</span><span class="tok-p">])</span>
+<span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">datoteka.storages.local</span> <span class="tok-ss">:refer</span> <span class="tok-p">[</span><span class="tok-nv">localfs</span><span class="tok-p">]])</span>
+<span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">datoteka.storages.misc</span> <span class="tok-ss">:refer</span> <span class="tok-p">[</span><span class="tok-nv">scoped</span><span class="tok-p">]])</span>
+
+<span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">storage</span>
+  <span class="tok-p">(</span><span class="tok-nf">localfs</span> <span class="tok-p">{</span><span class="tok-ss">:basedir</span> <span class="tok-s">&quot;/tmp/&quot;</span>
+            <span class="tok-ss">:baseuri</span> <span class="tok-s">&quot;http://localhost/media/&quot;</span><span class="tok-p">}))</span>
+
+<span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">scoped-storage</span>
+  <span class="tok-p">(</span><span class="tok-nf">scoped</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;subdir&quot;</span><span class="tok-p">))</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then, a simple example interacting with the scoped storage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-c1">;; Works in the same way as the plain `storage` for store files</span>
+<span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/save</span> <span class="tok-nv">scoped-storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span> <span class="tok-s">&quot;some-content&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;test-file.txt&quot;</span>
+
+<span class="tok-c1">;; With the exception that when `lookup` it used:</span>
+
+<span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/lookup</span> <span class="tok-nv">scoped-storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/subdir/test-file.txt&quot;</span>
+
+<span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/lookup</span> <span class="tok-nv">storage</span> <span class="tok-s">&quot;subdir/test-file.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/subdir/test-file.txt&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="hashed-storage"><a class="link" href="#hashed-storage">Hashed Storage</a></h4>
+<div class="paragraph">
+<p>In the same way as <strong>scoped</strong>, the <strong>hashed</strong> storage is a stacked storage
+and requires of an other storage to work.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>hashed</strong> storage provides a very nice improvement over a plain
+storage making the resulting path not guessable and not deterministic.
+Very useful when you want to expose some downloads under the public address
+but avoid easy files lookup through brute-force.</p>
+</div>
+<div class="paragraph">
+<p>Let see an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">datoteka.storages</span> <span class="tok-ss">:as</span> <span class="tok-nv">st</span><span class="tok-p">])</span>
+<span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">datoteka.storages.local</span> <span class="tok-ss">:refer</span> <span class="tok-p">[</span><span class="tok-nv">localfs</span><span class="tok-p">]])</span>
+<span class="tok-p">(</span><span class="tok-nf">require</span> <span class="tok-o">&#39;</span><span class="tok-p">[</span><span class="tok-nv">datoteka.storages.misc</span> <span class="tok-ss">:refer</span> <span class="tok-p">[</span><span class="tok-nv">hashed</span><span class="tok-p">]])</span>
+
+<span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">storage</span>
+  <span class="tok-p">(</span><span class="tok-nf">localfs</span> <span class="tok-p">{</span><span class="tok-ss">:basedir</span> <span class="tok-s">&quot;/tmp/&quot;</span>
+            <span class="tok-ss">:baseuri</span> <span class="tok-s">&quot;http://localhost/media/&quot;</span><span class="tok-p">}))</span>
+
+<span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">hashed-storage</span> <span class="tok-p">(</span><span class="tok-nf">hashed</span> <span class="tok-nv">storage</span><span class="tok-p">))</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then, a simple example interacting with the scoped storage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/save</span> <span class="tok-nv">hashed-storage</span> <span class="tok-s">&quot;test-file.txt&quot;</span> <span class="tok-s">&quot;some-content&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;iP2/qIG/PBM/msJ/sJW/zU7/NM4Y49T394nc1jPsqQvvCAsn/test-file.txt&quot;</span>
+
+<span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">st/lookup</span> <span class="tok-nv">hashed-storage</span> <span class="tok-s">&quot;iP2/qIG/PBM/msJ/sJW/zU7/NM4Y49T394nc1jPsqQvvCAsn/test-file.txt&quot;</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/iP2/qIG/PBM/msJ/sJW/zU7/NM4Y49T394nc1jPsqQvvCAsn/test-file.txt&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The hash is splitted in multiple directories for avoid create a huge
+number of files under the same directory (that depending on the
+underlying filesystem used for the hard drive may imply some
+performance penalities for file access when the directory contains a
+huge number of files).</p>
+</div>
+<div class="paragraph">
+<p>Also, the hash is generated taking 64 bytes of true random data (using
+<code>SecureRandom</code>) and hashing it with sha256 and encoding the result
+using url safe variant of base64.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="reference"><a class="link" href="#reference">Reference</a></h3>
+<div class="sect3">
+<h4 id="functions-by-use"><a class="link" href="#functions-by-use">Functions by Use</a></h4>
+<div class="sect4">
+<h5 id="predicates"><a class="link" href="#predicates">Predicates</a></h5>
+<div class="paragraph">
+<p>A complete set of predicates for check filesystem stuff:</p>
+</div>
+<div class="paragraph">
+<p><a href="#path-pred"><code>path?</code></a>,
+<a href="#file-pred"><code>file?</code></a>,
+<a href="#absolute-pred"><code>absolute?</code></a>,
+<a href="#relative-pred"><code>relative?</code></a>,
+<a href="#executable-pred"><code>executable?</code></a>,
+<a href="#exists-pred"><code>exists?</code></a>,
+<a href="#directory-pred"><code>directory?</code></a>,
+<a href="#regular-file-pred"><code>regular-file?</code></a>,
+<a href="#link-pred"><code>link?</code></a>,
+<a href="#hidden-pred"><code>hidden?</code></a>,
+<a href="#readable-pred"><code>readable?</code></a>,
+<a href="#writable-pred"><code>writable?</code></a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="path-manipulation"><a class="link" href="#path-manipulation">Path manipulation</a></h5>
+<div class="paragraph">
+<p>A complete set of functions for create and work with paths:</p>
+</div>
+<div class="paragraph">
+<p><a href="#path"><code>path</code></a>,
+<a href="#name"><code>name</code></a>,
+<a href="#parent"><code>parent</code></a>,
+<a href="#join"><code>join</code></a>,
+<a href="#ext"><code>ext</code></a>,
+<a href="#split-ext"><code>split-ext</code></a>,
+<a href="#normalize"><code>normalize</code></a>,
+<a href="#relativize"><code>relativize</code></a>,
+<a href="#file"><code>file</code></a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="filesystem-manipulation"><a class="link" href="#filesystem-manipulation">Filesystem manipulation</a></h5>
+<div class="paragraph">
+<p>A complete set of functions for work with filesystems:</p>
+</div>
+<div class="paragraph">
+<p><a href="#list-dir"><code>list-dir</code></a>,
+<a href="#create-dir"><code>create-dir</code></a>,
+<a href="#delete"><code>delete</code></a>,
+<a href="#move"><code>move</code></a>,
+<a href="#create-tempdir"><code>create-tempdir</code></a>,
+<a href="#create-tempfile"><code>create-tempfile</code></a>
+<a href="#slurp-bytes"><code>slurp-bytes</code></a></p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="all-functions"><a class="link" href="#all-functions">All functions</a></h4>
+<div class="sect4">
+<h5 id="path-pred"><a class="link" href="#path-pred">path?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided value is a <code>Path</code> instance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/path?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/path?</span> <span class="tok-o">#</span><span class="tok-nb">path </span><span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="file-pred"><a class="link" href="#file-pred">file?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided value is a <code>File</code> instance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/file?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/file?</span> <span class="tok-p">(</span><span class="tok-nf">fs/file</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">))</span>
+<span class="tok-c1">;; =&gt; true</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="absolute-pred"><a class="link" href="#absolute-pred">absolute?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path is absolute.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/absolute?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/absolute</span> <span class="tok-s">&quot;tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="relative-pred"><a class="link" href="#relative-pred">relative?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path is relative.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/relative?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/relative</span> <span class="tok-s">&quot;tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="executable-pred"><a class="link" href="#executable-pred">executable?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path is executable file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/executable?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/executable?</span> <span class="tok-s">&quot;/bin/sh&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="exists-pred"><a class="link" href="#exists-pred">exists?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path exists.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/exists?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/exists?</span> <span class="tok-s">&quot;/tmp/foobar&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="directory-pred"><a class="link" href="#directory-pred">directory?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path is a directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/directory?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/directory?</span> <span class="tok-s">&quot;/bin/sh&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="regular-file-pred"><a class="link" href="#regular-file-pred">regular-file?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path is a regular file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/regular-file?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/regular-file?</span> <span class="tok-s">&quot;/bin/sh&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="link-pred"><a class="link" href="#link-pred">link?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path is symbolic link.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/link?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/link?</span> <span class="tok-s">&quot;/sbin&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="hidden-pred"><a class="link" href="#hidden-pred">hidden?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path is hidden file or directory?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/hidden?</span> <span class="tok-s">&quot;/home/user/.bashrc&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/hidden?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="readable-pred"><a class="link" href="#readable-pred">readable?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path is readable.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/readable?</span> <span class="tok-s">&quot;/proc/cpuinfo&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/readable?</span> <span class="tok-s">&quot;/var/log/auth.log&quot;</span><span class="tok-p">)</span> <span class="tok-c1">;; due to permissions</span>
+<span class="tok-c1">;; =&gt; false</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="writable-pred"><a class="link" href="#writable-pred">writable?</a></h5>
+<div class="paragraph">
+<p>Checks if the provided path is readable.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/writable?</span> <span class="tok-s">&quot;/proc/cpuinfo&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; false</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/writable?</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; true</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="path"><a class="link" href="#path">path</a></h5>
+<div class="paragraph">
+<p>Coerce to provided value to <code>Path</code> instance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-s">&quot;foo.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;foo.txt&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-p">(</span><span class="tok-nf">java.net.URI.</span> <span class="tok-s">&quot;file:///tmp&quot;</span><span class="tok-p">))</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-p">(</span><span class="tok-nf">java.net.URL.</span> <span class="tok-s">&quot;file:///tmp&quot;</span><span class="tok-p">))</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-p">[</span><span class="tok-s">&quot;/tmp&quot;</span> <span class="tok-s">&quot;foo&quot;</span><span class="tok-p">])</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/foo&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/path</span> <span class="tok-s">&quot;/tmp&quot;</span> <span class="tok-s">&quot;foo&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/foo&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="file"><a class="link" href="#file">file</a></h5>
+<div class="paragraph">
+<p>Coerce provided value to <code>File</code> instance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/file</span> <span class="tok-s">&quot;foo.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #file &quot;foo.txt&quot;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This function accepts the same types as <code>fs/path</code>, because the
+underlying implementation coerces everything to path and then calls
+<code>.toFile</code> method.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="name"><a class="link" href="#name">name</a></h5>
+<div class="paragraph">
+<p>Get the <strong>file name</strong> part of the provided path.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/name</span> <span class="tok-s">&quot;/tmp/foo.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; &quot;foo.txt&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="parent"><a class="link" href="#parent">parent</a></h5>
+<div class="paragraph">
+<p>Get the parent directory of the provided path.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/parent</span> <span class="tok-s">&quot;/tmp/foo.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="join"><a class="link" href="#join">join</a></h5>
+<div class="paragraph">
+<p>Concatenate two or more paths in one using the default current system
+path separator and normalizing the output.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/join</span> <span class="tok-s">&quot;/tmp&quot;</span> <span class="tok-s">&quot;foo.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/foo.txt&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="ext"><a class="link" href="#ext">ext</a></h5>
+<div class="paragraph">
+<p>Retrieve the extension of the file name part of the path. If file does
+not have extension, <code>nil</code> will be returned.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/ext</span> <span class="tok-s">&quot;foo.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; &quot;txt&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/ext</span> <span class="tok-s">&quot;foo&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; nil</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="split-ext"><a class="link" href="#split-ext">split-ext</a></h5>
+<div class="paragraph">
+<p>A helper for split the base path and the extension.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/split-ext</span> <span class="tok-s">&quot;/tmp/foo.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; [&quot;/tmp/foo&quot; &quot;.txt&quot;]</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/split-ext</span> <span class="tok-s">&quot;/tmp/foo&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; [&quot;/tmp/foo&quot; nil]</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="normalize"><a class="link" href="#normalize">normalize</a></h5>
+<div class="paragraph">
+<p>A helper for normalize the path and remove redundant segments.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/normalize</span> <span class="tok-s">&quot;~&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/home/myuser&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/normalize</span> <span class="tok-s">&quot;~/.zshrc&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/home/myuser/.zshrc&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="relativize"><a class="link" href="#relativize">normalize</a></h5>
+<div class="paragraph">
+<p>Constructs a relative path of the provided path in terms of an other path.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/relativize</span> <span class="tok-s">&quot;/tmp/foo/bar.txt&quot;</span> <span class="tok-s">&quot;/tmp&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;foo/bar.txt&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/relativize</span> <span class="tok-s">&quot;/tmp/foo/bar.txt&quot;</span> <span class="tok-s">&quot;/tmp/test&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;../foo/bar.txt&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="list-dir"><a class="link" href="#list-dir">list-dir</a></h5>
+<div class="paragraph">
+<p>A helper for recursivelly list all contens of the directory. The return value of this
+function is a lazy-seq.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+You need to realize all the sequence in order to properly close all acquired resources for
+this operation, independently if you need or not all resources. If you don&#8217;t want to worry about
+resource management, just coerce the value to a vector using <code>vec</code> function.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/list-dir</span> <span class="tok-s">&quot;/tmp/subdir&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; (#path &quot;/tmp/subdir/test-file.txt&quot; #path &quot;/tmp/subdir/test-file.html&quot;)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Optionally, you can pass a <strong>glob expression</strong> as second parameter for filter result.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/list-dir</span> <span class="tok-s">&quot;/tmp/subdir&quot;</span>, <span class="tok-s">&quot;*.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; (#path &quot;/tmp/subdir/test-file.txt&quot;)</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="create-dir"><a class="link" href="#create-dir">create-dir</a></h5>
+<div class="paragraph">
+<p>A helper for create a new directory or directories. In fact this works
+in the same way as <code>mkdir -p</code>, or in other words, it creates all not
+existing parent directories for you.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/create-dir</span> <span class="tok-s">&quot;/tmp/subdir/testdir&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/subdir/testdir&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the directory is already exists, no action is performed and the
+path to the directory is returned.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="move"><a class="link" href="#move">move</a></h5>
+<div class="paragraph">
+<p>Move or rename a file to a target file. If the target file exists,
+by default it will be replaced.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/move</span> <span class="tok-s">&quot;/tmp/foo.txt&quot;</span> <span class="tok-s">&quot;/tmp/bar.txt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/bar.txt&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also, by default an atomic move will be performed and an exception
+will be raised if your system does not support that. You can pass your
+own flags as the third optional argument to the <code>move</code> function.</p>
+</div>
+<div class="paragraph">
+<p>This is a list of available flags: <code>:atomic</code>, <code>:replace</code> and
+<code>:copy-attributes</code>. The default flags are <code>#{:atomic :replace}</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example using not atomic move.</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/move</span> <span class="tok-s">&quot;/tmp/bar.txt&quot;</span> <span class="tok-s">&quot;/tmp/foo.txt&quot;</span> <span class="tok-o">#</span><span class="tok-p">{</span><span class="tok-ss">:replace</span><span class="tok-p">})</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/foo.txt&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="create-tempdir"><a class="link" href="#create-tempdir">create-tempdir</a></h5>
+<div class="paragraph">
+<p>Creates a temporal directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/create-tempdir</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/547228100008922024&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/create-tempdir</span> <span class="tok-s">&quot;myprefix&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/myprefix5085100141359807070&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The user of this function is responsible of removing it when it is not
+longer needed.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="create-tempfile"><a class="link" href="#create-tempfile">create-tempfile</a></h5>
+<div class="paragraph">
+<p>Create a temporal file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/create-tempfile</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/4790584308117167851.tmp&quot;</span>
+
+<span class="tok-p">(</span><span class="tok-nf">fs/create-tempfile</span> <span class="tok-ss">:suffix</span> <span class="tok-s">&quot;.txt&quot;</span> <span class="tok-ss">:prefix</span> <span class="tok-s">&quot;test&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; =&gt; #path &quot;/tmp/test7617683814929744528.txt&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The user of this function is responsible of removing it when it is not
+longer needed.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="slurp-bytes"><a class="link" href="#slurp-bytes">slurp-bytes</a></h5>
+<div class="paragraph">
+<p>Is a similar function to the <code>slurp</code> but instead of reading the contents of the file as
+string, it reads it as <code>byte</code> array.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">fs/slurp-bytes</span> <span class="tok-s">&quot;/proc/cpuinfo&quot;</span><span class="tok-p">)</span>
+<span class="tok-o">#</span><span class="tok-nv">object</span><span class="tok-p">[</span><span class="tok-s">&quot;[B&quot;</span> <span class="tok-mi">0</span><span class="tok-nv">x19b8169d</span> <span class="tok-s">&quot;[B@19b8169d&quot;</span><span class="tok-p">]</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="developers-guide"><a class="link" href="#developers-guide">Developers Guide</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="philosophy"><a class="link" href="#philosophy">Philosophy</a></h3>
+<div class="paragraph">
+<p>Five most important rules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Beautiful is better than ugly.</p>
+</li>
+<li>
+<p>Explicit is better than implicit.</p>
+</li>
+<li>
+<p>Simple is better than complex.</p>
+</li>
+<li>
+<p>Complex is better than complicated.</p>
+</li>
+<li>
+<p>Readability counts.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All contributions to <em>datoteka</em> should keep these important rules in mind.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="contributing"><a class="link" href="#contributing">Contributing</a></h3>
+<div class="paragraph">
+<p>Unlike Clojure and other Clojure contributed libraries <em>datoteka</em> does not have
+many restrictions for contributions. Just open an issue or pull request.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="source-code"><a class="link" href="#source-code">Source Code</a></h3>
+<div class="paragraph">
+<p><em>datoteka</em> is open source and can be found on
+<a href="https://github.com/funcool/datoteka">github</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can clone the public repository with this command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="text">git clone https://github.com/funcool/datoteka</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="run-tests"><a class="link" href="#run-tests">Run tests</a></h3>
+<div class="paragraph">
+<p>For running tests just execute this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="text">lein test</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="license"><a class="link" href="#license">License</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>datoteka</em> is licensed under BSD (2-Clause) license:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Copyright (c) 2015-2016 Andrey Antukh &lt;niwi@niwi.nz&gt;
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-02-06 21:50:43 CET
+</div>
+</div>
+</body>
+</html>
