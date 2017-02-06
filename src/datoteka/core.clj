@@ -240,19 +240,33 @@
   [path]
   (.toFile ^Path (pt/-path path)))
 
-(defn list-directory
-  ([path]
-   (let [path (pt/-path path)]
-     (with-open [stream (Files/newDirectoryStream path)]
-       (vec stream))))
-  ([path glob]
-   (let [path (pt/-path path)]
-     (with-open [stream (Files/newDirectoryStream path ^String glob)]
-       (vec stream)))))
+(defn- list-dir-lazy-seq
+  ([stream] (list-dir-lazy-seq stream (seq stream)))
+  ([stream s]
+   (lazy-seq
+    (let [p1 (first s)
+          p2 (rest s)]
+      (if (seq p2)
+        (cons p1 (list-dir-lazy-seq stream p2))
+        (do
+          (.close stream)
+          (cons p1 nil)))))))
 
-(defn list-files
-  [path]
-  (filter regular-file? (list-directory path)))
+(defn list-dir
+  "Return a lazy seq of files and directories found under the provided
+  directory. The order of files is not guarrantied.
+
+  NOTE: the seq should be fully realized in order to properly release
+  all acquired resources for this operation. Converting it to vector
+  is an option for do it."
+  ([path]
+   (let [path (pt/-path path)
+         stream (Files/newDirectoryStream path)]
+     (list-dir-lazy-seq stream)))
+  ([path ^String glob]
+   (let [path (pt/-path path)
+         stream (Files/newDirectoryStream path glob)]
+     (list-dir-lazy-seq stream))))
 
 (defn create-tempdir
   "Creates a temp directory on the filesystem."
