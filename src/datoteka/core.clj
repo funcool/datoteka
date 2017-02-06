@@ -212,7 +212,7 @@
       (pt/-path *home*)
 
       (.startsWith path (str "~" *sep*))
-      (pt/-path (.replace path "~" ^String *home*))
+      (pt/-path (.replace path "~" ^String (.toString ^Object *home*)))
 
       (not (.startsWith path *sep*))
       (pt/-path (str *cwd* *sep* path))
