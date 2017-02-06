@@ -33,6 +33,7 @@
            java.net.URI
            java.nio.file.Path
            java.nio.file.Files
+           java.nio.file.NoSuchFileException
            java.util.function.Supplier
            java.util.concurrent.CompletableFuture
            java.util.concurrent.ExecutorService
@@ -67,7 +68,11 @@
   [base path]
   (let [path (->> (pt/-path path)
                   (normalize-path base))]
-    (fs/delete-single path)))
+    (try
+      (fs/delete path)
+      true
+      (catch java.nio.file.NoSuchFileException e
+        false))))
 
 (defn- submit
   [executor func]
