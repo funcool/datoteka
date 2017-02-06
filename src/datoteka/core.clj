@@ -406,4 +406,3 @@
   (make-output-stream [path opts]
     (let [^OutputStream os (path->output-stream path)]
       (io/make-output-stream os opts))))
-
