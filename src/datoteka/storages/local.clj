@@ -53,16 +53,19 @@
 
 (defn- save
   [base path content]
-  ;; TODO: rename the file if it is already exists, the current
-  ;; implementation just silently overwrites the file.
   (let [^Path path (pt/-path path)
         ^Path fullpath (normalize-path base path)]
     (when-not (fs/exists? (.getParent fullpath))
       (fs/create-dir (.getParent fullpath)))
-    (with-open [^InputStream src (pt/-input-stream content)
-                ^OutputStream dst (io/output-stream fullpath)]
-      (io/copy src dst)
-      path)))
+    (loop [iteration nil]
+      (let [[basepath ext] (fs/split-ext fullpath)
+            candidate (fs/path (str basepath iteration ext))]
+        (if (fs/exists? candidate)
+          (recur (if (nil? iteration) 1 (inc iteration)))
+          (with-open [^InputStream src (pt/-input-stream content)
+                      ^OutputStream dst (io/output-stream candidate)]
+            (io/copy src dst)
+            (fs/relativize candidate base)))))))
 
 (defn- delete
   [base path]
