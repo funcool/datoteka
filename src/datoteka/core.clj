@@ -334,11 +334,10 @@
 
 (defn slurp-bytes
   [input]
-  (with-open [input (io/input-stream input)
+  (with-open [input (io/input-stream (path input))
               output (java.io.ByteArrayOutputStream. (.available input))]
     (io/copy input output)
     (.toByteArray output)))
-
 
 ;; --- Implementation
 
