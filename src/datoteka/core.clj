@@ -231,9 +231,9 @@
 
 (defn relativize
   "Returns the relationship between two paths."
-  [path1 path2]
-  (.relativize ^Path (pt/-path path1)
-               ^Path (pt/-path path2)))
+  [base other]
+  (.relativize ^Path (pt/-path other)
+               ^Path (pt/-path base)))
 
 (defn to-file
   "Converts the path to a java.io.File instance."
