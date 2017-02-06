@@ -4,7 +4,7 @@
   :license {:name "BSD (2-Clause)"
             :url "http://opensource.org/licenses/BSD-2-Clause"}
   :dependencies [[org.clojure/clojure "1.8.0" :scope "provided"]
-                 [funcool/promesa "1.6.0"]]
+                 [funcool/promesa "1.7.0"]]
 
   :deploy-repositories {"releases" :clojars
                         "snapshots" :clojars}
