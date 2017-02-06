@@ -235,7 +235,7 @@
   (.relativize ^Path (pt/-path other)
                ^Path (pt/-path base)))
 
-(defn to-file
+(defn file
   "Converts the path to a java.io.File instance."
   [path]
   (.toFile ^Path (pt/-path path)))
