@@ -1,4 +1,4 @@
-;; Copyright (c) 2015-2016 Andrey Antukh <niwi@niwi.nz>
+;; Copyright (c) 2015-2017 Andrey Antukh <niwi@niwi.nz>
 ;; All rights reserved.
 ;;
 ;; Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
 
 (ns datoteka.core
   "File System helpers."
-  (:refer-clojure :exclude [name resolve])
+  (:refer-clojure :exclude [name])
   (:require [datoteka.proto :as pt]
             [clojure.java.io :as io])
   (:import java.io.Writer
@@ -216,13 +216,15 @@
 
       :else (pt/-path path))))
 
-(defn resolve
+(defn join
   "Resolve path on top of an other path."
-  [base path]
-  (let [^Path base (pt/-path base)
-        ^Path path (pt/-path path)]
-    (-> (.resolve base path)
-        (.normalize))))
+  ([base path]
+   (let [^Path base (pt/-path base)
+         ^Path path (pt/-path path)]
+     (-> (.resolve base path)
+         (.normalize))))
+  ([base path & more]
+   (reduce join base (cons path more))))
 
 (defn relativize
   "Returns the relationship between two paths."
