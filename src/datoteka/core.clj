@@ -187,13 +187,15 @@
   (str (.getFileName ^Path (pt/-path path))))
 
 (defn split-ext
-  "Returns a vector of `[name extension]`."
+  "Returns a vector of `[^String name ^String extension]`."
   [path]
-  (let [base (name path)
-        i (.lastIndexOf base ".")]
+  (let [^Path path (pt/-path path)
+        ^String path-str (.toString path)
+        i (.lastIndexOf path-str ".")]
     (if (pos? i)
-      [(subs base 0 i) (subs base i)]
-      [base nil])))
+      [(subs path-str 0 i)
+       (subs path-str i)]
+      [path-str nil])))
 
 (defn extension
   "Return the extension part of a file."
