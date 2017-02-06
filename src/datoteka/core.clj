@@ -284,23 +284,24 @@
          attrs (make-permissions perms)]
      (Files/createDirectories path attrs))))
 
-(defn delete-single
-  "Delete signle file if it exists."
-  [path]
-  (Files/deleteIfExists ^Path (pt/-path path)))
+(defn- delete-recursive
+  [^Path path]
+  (->> (proxy [SimpleFileVisitor] []
+         (visitFile [file attrs]
+           (Files/delete file)
+           FileVisitResult/CONTINUE)
+         (postVisitDirectory [dir exc]
+           (Files/delete dir)
+           FileVisitResult/CONTINUE))
+       (Files/walkFileTree path)))
 
 (defn delete
   "Delete recursiverly a directory or file."
   [path]
-  (let [path (pt/-path path)
-        visitor (proxy [SimpleFileVisitor] []
-                  (visitFile [file attrs]
-                    (Files/delete file)
-                    FileVisitResult/CONTINUE)
-                  (postVisitDirectory [dir exc]
-                    (Files/delete dir)
-                    FileVisitResult/CONTINUE))]
-    (Files/walkFileTree path visitor)))
+  (let [^Path path (pt/-path path)]
+    (if (regular-file? path)
+      (Files/deleteIfExists path)
+      (delete-recursive path))))
 
 (defn move
   "Move or rename a file to a target file.
