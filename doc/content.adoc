@@ -805,7 +805,7 @@ string, it reads it as `byte` array.
 [source,clojure]
 ----
 (fs/slurp-bytes "/proc/cpuinfo")
-#object["[B" 0x19b8169d "[B@19b8169d"]
+;; => #object["[B" 0x19b8169d "[B@19b8169d"]
 ----
 
 
