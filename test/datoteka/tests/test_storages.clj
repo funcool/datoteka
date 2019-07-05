@@ -22,11 +22,12 @@
 ;; OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(ns datoteka.tests.test_storages
+(ns datoteka.tests.test-storages
   (:require [clojure.test :as t]
             [datoteka.storages :as st]
             [datoteka.storages.local :as local]
-            [datoteka.storages.misc :as misc])
+            [datoteka.storages.misc :as misc]
+            [cuerdas.core :as str])
   (:import java.io.File
            org.apache.commons.io.FileUtils))
 
@@ -58,6 +59,17 @@
         ruri (st/public-url storage rpath)]
     (t/is (= (str ruri) "http://localhost:5050/test.txt"))))
 
+(t/deftest test-localfs-store-lockup-and-get-public-url-with-filename-with-spaces
+  (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
+                                :baseuri "http://localhost:5050/"
+                                :transform-filename str/slug})
+        rpath  @(st/save storage "foo bar.txt" "my content")
+        fpath @(st/lookup storage rpath)
+        fdata (slurp fpath)]
+    (t/is (= (str fpath) "/tmp/datoteka/test/foo-bar.txt"))
+    (t/is (= "my content" fdata))))
+
+
 (t/deftest test-localfs-store-and-lookup-with-subdirs
   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
                                 :baseuri "http://localhost:5050/"})
@@ -73,13 +85,6 @@
         rpath  @(st/save storage "test.txt" "my content")]
     (t/is @(st/delete storage rpath))
     (t/is (not @(st/exists? storage rpath)))))
-
-;; (t/deftest test-localfs-store-duplicate-file-raises-exception
-;;   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
-;;                                 :baseuri "http://localhost:5050/"})]
-;;     (t/is @(st/save storage "test.txt" "my content"))
-;;     (t/is (thrown? java.util.concurrent.ExecutionException
-;;                    @(st/save storage "test.txt" "my content")))))
 
 (t/deftest test-localfs-access-unauthorized-path
   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
@@ -108,14 +113,6 @@
         rpath  @(st/save storage "test.txt" "my content")]
     (t/is @(st/delete storage rpath))
     (t/is (not @(st/exists? storage rpath)))))
-
-;; (t/deftest test-localfs-scoped-store-duplicate-file-raises-exception
-;;   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
-;;                                 :baseuri "http://localhost:5050/"})
-;;         storage (misc/scoped storage "some/prefix")]
-;;     (t/is @(st/save storage "test.txt" "my content"))
-;;     (t/is (thrown? java.util.concurrent.ExecutionException
-;;                    @(st/save storage "test.txt" "my content")))))
 
 (t/deftest test-localfs-scoped-access-unauthorized-path
   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"

@@ -22,7 +22,7 @@
 ;; OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(ns datoteka.tests.test_core
+(ns datoteka.tests.test-core
   (:require [clojure.test :as t]
             [datoteka.core :as fs]))
 
@@ -57,11 +57,9 @@
 (t/deftest path-manipulation-test
   (t/is (= (fs/path "/foo") (fs/parent "/foo/bar")))
   (t/is (= "bar.txt" (fs/name "/foo/bar.txt")))
-  (t/is (= ["bar" ".txt"] (fs/split-ext "/foo/bar.txt")))
-  (t/is (= "txt" (fs/extension "foo/bar.txt")))
-  (t/is (= "bar" (fs/base-name "foo/bar.txt")))
+  (t/is (= ["/foo/bar" ".txt"] (fs/split-ext "/foo/bar.txt")))
   (t/is (= fs/*home* (fs/normalize "~")))
   (t/is (= fs/*cwd* (fs/normalize ".")))
-  (t/is (= (fs/path "/foo/bar") (fs/resolve "/foo" "bar")))
-  (t/is (fs/file? (fs/to-file "foobar")))
+  (t/is (= (fs/path "/foo/bar") (fs/path "/foo" "bar")))
+  (t/is (fs/file? (fs/file "foobar")))
   )

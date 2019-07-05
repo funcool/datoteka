@@ -6,8 +6,8 @@
 
 ;; --- Development Stuff
 
-(defn test
-  ([] (test #"^datoteka.tests.*"))
+(defn run-test
+  ([] (run-test #"^datoteka.tests.*"))
   ([o]
    (repl/refresh)
    (cond
@@ -19,3 +19,12 @@
        (do (require (symbol sns))
            (test/test-vars [(resolve o)]))
        (test/test-ns o)))))
+
+(defn -main
+  [& args]
+  (require 'datoteka.tests.test-core)
+  (require 'datoteka.tests.test-storages)
+  (let [{:keys [fail]} (test/run-all-tests #"^datoteka.tests.*")]
+    (if (pos? fail)
+      (System/exit fail)
+      (System/exit 0))))
