@@ -1,4 +1,4 @@
-;; Copyright (c) 2015-2017 Andrey Antukh <niwi@niwi.nz>
+;; Copyright (c) 2015-2019 Andrey Antukh <niwi@niwi.nz>
 ;; All rights reserved.
 ;;
 ;; Redistribution and use in source and binary forms, with or without
@@ -51,19 +51,10 @@
                         {:path (str path)})))
       fullpath)))
 
-(defn- normalize-filename
-  [^Path path options]
-  (let [transform (:transform-filename options)
-        transform (if (fn? transform) transform identity)
-        parent (fs/parent path)
-        [name ext] (fs/split-ext (fs/name path))]
-    (fs/path parent (str (transform name) ext))))
-
 (defn- save
-  [this base path content]
+  [base path content]
   (let [^Path path (pt/-path path)
-        ^Path fullpath (-> (normalize-path base path)
-                           (normalize-filename (:options this)))]
+        ^Path fullpath (normalize-path base path)]
     (when-not (fs/exists? (.getParent fullpath))
       (fs/create-dir (.getParent fullpath)))
     (loop [iteration nil]
@@ -77,7 +68,7 @@
             (fs/relativize candidate base)))))))
 
 (defn- delete
-  [this base path]
+  [base path]
   (let [path (->> (pt/-path path)
                   (normalize-path base))]
     (try
@@ -91,21 +82,19 @@
   (let [supplier (reify Supplier (get [_] (func)))]
      (CompletableFuture/supplyAsync supplier executor)))
 
-
 (defrecord LocalFileSystemBackend [^Path base
                                    ^URI baseuri
-                                   ^ExecutorService executor
-                                   options]
+                                   ^ExecutorService executor]
   pt/IPublicStorage
   (-public-uri [_ path]
     (.resolve baseuri (str path)))
 
   pt/IStorage
-  (-save [this path content]
-    (submit executor #(save this base path content)))
+  (-save [_ path content]
+    (submit executor #(save base path content)))
 
-  (-delete [this path]
-    (submit executor #(delete this base path)))
+  (-delete [_ path]
+    (submit executor #(delete base path)))
 
   (-exists? [this path]
     (try
@@ -142,7 +131,6 @@
   - `:basedir`: a fisical directory on your local machine
   - `:baseuri`: a base uri used for resolve the files
   - `:executor`: an executor instance (optional)
-  - `:transform-filename`: a function responsible to transform filename (optional)
   "
   [{:keys [basedir baseuri executor]
     :or {executor (ForkJoinPool/commonPool)}
@@ -156,5 +144,4 @@
     (when-not (fs/exists? basepath)
       (fs/create-dir basepath))
 
-    (->LocalFileSystemBackend basepath baseuri executor
-                              (dissoc options :baseuri :basedir :executor))))
+    (->LocalFileSystemBackend basepath baseuri executor)))
