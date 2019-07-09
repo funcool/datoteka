@@ -1,6 +1,6 @@
 = datoteka
 Andrey Antukh, <niwi@niwi.nz>
-1.0.0
+1.1.0
 :toc: left
 :source-highlighter: pygments
 :pygments-style: friendly
@@ -28,7 +28,7 @@ Add the following dependency to your project.clj file:
 
 [source,clojure]
 ----
-[funcool/datoteka "1.0.0"]
+[funcool/datoteka "1.1.0"]
 ----
 
 

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>funcool</groupId>
+  <artifactId>datoteka</artifactId>
+  <packaging>jar</packaging>
+  <version>1.1.0</version>
+  <name>datoteka</name>
+  <description>Filesystem utilities and Storage abstraction for Clojure.</description>
+  <url>https://github.com/funcool/datoteka</url>
+  <licenses>
+    <license>
+      <name>BSD (2-Clause)</name>
+      <url>http://opensource.org/licenses/BSD-2-Clause</url>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git://github.com/funcool/datoteka.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/funcool/datoteka.git</developerConnection>
+    <tag>a046446a45d3a9b3fc0ee1ba56a6e44d074c2b8c
+    </tag>
+    <url>https://github.com/funcool/datoteka</url>
+  </scm>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojure</artifactId>
+      <version>1.10.1</version>
+    </dependency>
+    <dependency>
+      <groupId>funcool</groupId>
+      <artifactId>promesa</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>clojars</id>
+      <url>https://repo.clojars.org/</url>
+    </repository>
+  </repositories>
+</project>
