@@ -1,16 +1,19 @@
 {:deps {org.clojure/clojure {:mvn/version "1.10.1"}
         funcool/promesa {:mvn/version "2.0.1"}}
  :paths ["src"]
- :aliases
- {:dev {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}
-                     org.clojure/tools.namespace {:mvn/version "0.3.0"}
-                     commons-io/commons-io {:mvn/version "2.6"}
-                     funcool/cuerdas {:mvn/version "2.2.0"}}
-        :extra-paths ["test"]}
-  :repl {:main-opts  ["-m" "rebel-readline.main"]}
-  :ancient {:main-opts ["-m" "deps-ancient.deps-ancient"]
-            :extra-deps {deps-ancient {:mvn/version "RELEASE"}}}
-  }}
+ :aliases {:dev {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}
+                              org.clojure/tools.namespace {:mvn/version "0.3.0"}
+                              commons-io/commons-io {:mvn/version "2.6"}
+                              funcool/cuerdas {:mvn/version "2.2.0"}}
+                 :extra-paths ["test"]}
+
+           :jar {:extra-deps {seancorfield/depstar {:mvn/version "RELEASE"}}
+                 :main-opts ["-m" "hf.depstar.jar"]}
+
+           :repl {:main-opts  ["-m" "rebel-readline.main"]}
+           :ancient {:main-opts ["-m" "deps-ancient.deps-ancient"]
+                     :extra-deps {deps-ancient {:mvn/version "RELEASE"}}}
+           }}
 
 
 
