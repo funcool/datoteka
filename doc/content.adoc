@@ -11,15 +11,15 @@ Andrey Antukh, <niwi@niwi.nz>
 
 == Introduction
 
-A filesystem toolset and storage implementation for Clojure. In one
+A filesystem toolset and storage implementation for Clojure. On one
 side you have a collection of functions for:
 
 - work with paths (creating and manipulating).
-- work with filesystem (files and directories crud and many predicates).
+- work with the filesystem (files and directories crud and many predicates).
 - IO (clojure.java.io implementation for paths).
 
 And on the other side it provides a *Storage* abstraction, that facilitates abstract
-filesystem access under uniform api for web-applications.
+filesystem access under uniform api for web applications.
 
 
 == Install
@@ -44,7 +44,7 @@ The path and filesystem helper functions are all exposed under the `datoteka.cor
 ----
 
 This library uses JVM NIO, so under the hood, the `java.nio.file.Path` is used instead of classical `java.io.File`.
-And then, you have many ways to create a *path* instance. The basic one is just using the `path` function:
+You have many ways to create a *path* instance. The basic one is just using the `path` function:
 
 [source, clojure]
 ----
@@ -55,7 +55,7 @@ And then, you have many ways to create a *path* instance. The basic one is just 
 As you can observe, the path properly prints with a *data reader*, so once you have imported the library, you can
 use the `#path "/tmp"` syntax to create paths.
 
-The paths also can be created from a varios kind of objects (such as URI, URL, String and seq's):
+The paths also can be created from a various kind of objects (such as URI, URL, String and seq's):
 
 [source, clojure]
 ----
@@ -80,7 +80,7 @@ The `path` function is also variadic, so you can pass multiple arguments to it:
 ;; => #path "/tmp/foo"
 ----
 
-And for convenience, in can use the `clojure.java.io` api with paths in the same way as you
+And for convenience, you can use the `clojure.java.io` api with paths in the same way as you
 have done it with `java.io.File`:
 
 [source, clojure]
@@ -124,7 +124,7 @@ they are not relevant for now).
 
 ==== Local FileSystem Storage
 
-The local storage is a default implementation of stroage abstraction
+The local storage is a default implementation of storage abstraction
 that stores the files in a local file system. Let create an instance
 of it:
 
@@ -152,11 +152,11 @@ CompletableFuture) with the final path relative to the provided
 
 If you application works in a synchronous way, just use the `@` or
 `deref` function. It blocks the current thread until the underlying
-operation is finished. And if you application has asynchronous
+operation is finished. And if you application has an asynchronous
 workflow, you can just use `funcool/promesa` for work with promises in
-more comfortable way.
+a more comfortable way.
 
-This approach allows easily use the storage api in both possible
+This approach allows easy use of the storage api in both possible
 workflows.
 
 Now, let see what is happens if you try to store the same file again:
@@ -168,22 +168,22 @@ user=> @(st/save storage "test-file.txt" "some-content")
 ----
 
 As you can observe, the storage handles duplicates for you. You don't
-need to worry about the filenames, if duplicate name is used, an other
-name will be automatically choiced.
+need to worry about the filenames. If a duplicate name is used, another
+name will be automatically chosen.
 
-NOTE: at this moment the incremental integer is used for choice a new
-name but this can no longer be valid on next version. You should
-always rely on the return value of `save` function instead of having
-the supposition that the strategy of choicing new name will be the
-same.
+NOTE: at the moment an incremental integer is used for choice of a
+new name but this may no longer be valid in a future version. You
+should always rely on the return value of `save` function instead of
+having the assumption that the strategy of choosing a new name will be
+the same.
 
-The 3rd argument to the `save` function represents the content
+The 3rd argument to the `save` function represents the contents
 of the file. It accepts anything that can be coerced to InputStream
 with `clojure.java.io/input-stream` with the small exception for
-strings, that instead interpret them as paths it interpret them
+strings, that instead of interpreting them as paths it interprets them
 as content.
 
-You can check if some file exists with the `st/exists?` predicate:
+You can check if a file exists with the `st/exists?` predicate:
 
 [source, clojure]
 ----
@@ -212,16 +212,16 @@ application, the `public-url` is your friend:
 ;; => object[java.net.URI 0xa215deb "http://localhost/media/test-file.txt"]
 ----
 
-This function just return a concatenation of the relative path of the
+This function just returns a concatenation of the relative path of the
 file with the provided URI on `:baseuri` option on storage
 constructor.
 
-NOTE: In summary, this allows persist files in local file system and
-store relative paths on the database, which in turn allows future
+NOTE: In summary, this allows us to persist files in local file system
+and store relative paths on the database, which in turn allows future
 filesystem relocation without worrying about the need of any change on
 your code or the database.
 
-Additionally to the explained functions, there are the `delete` function
+Additionally to the explained functions, there is the `delete` function
 that given relative path or file name tries removing it:
 
 [source, clojure]
@@ -237,7 +237,7 @@ that given relative path or file name tries removing it:
 ==== Scoped Storage
 
 The *scoped* storage is considered stacked storage because it works on top of an other storage
-implmentation, just adding an additional feature to it. In this case just scoping the main
+implementation, just adding an additional feature to it. In this case just scoping the main
 storage base directory by a prefix.
 
 Let see an example:
@@ -277,12 +277,12 @@ And then, a simple example interacting with the scoped storage:
 ==== Hashed Storage
 
 In the same way as *scoped*, the *hashed* storage is a stacked storage
-and requires of an other storage to work.
+and requires another storage to work.
 
 The *hashed* storage provides a very nice improvement over a plain
 storage making the resulting path not guessable and not deterministic.
 Very useful when you want to expose some downloads under the public address
-but avoid easy files lookup through brute-force.
+but avoid easy file lookup through brute-force.
 
 Let see an example:
 
@@ -310,15 +310,15 @@ And then, a simple example interacting with the scoped storage:
 ;; => #path "/tmp/iP2/qIG/PBM/msJ/sJW/zU7/NM4Y49T394nc1jPsqQvvCAsn/test-file.txt"
 ----
 
-The hash is splitted in multiple directories for avoid create a huge
+The hash is split in multiple directories for avoid create a huge
 number of files under the same directory (that depending on the
 underlying filesystem used for the hard drive may imply some
-performance penalities for file access when the directory contains a
+performance penalties for file access when the directory contains a
 huge number of files).
 
 Also, the hash is generated taking 64 bytes of true random data (using
-`SecureRandom`) and hashing it with sha256 and encoding the result
-using url safe variant of base64.
+`SecureRandom`) and hashing it with SHA-256 and encoding the result
+using a url-safe variant of base64.
 
 
 
@@ -621,7 +621,7 @@ Get the parent directory of the provided path.
 ===== join
 
 Concatenate two or more paths in one using the default current system
-path separator and normalizing the output.
+path separator and normalising the output.
 
 [source, clojure]
 ----
@@ -664,7 +664,7 @@ A helper for split the base path and the extension.
 [[normalize]]
 ===== normalize
 
-A helper for normalize the path and remove redundant segments.
+A helper for normalising the path and remove redundant segments.
 
 [source, clojure]
 ----
@@ -694,10 +694,10 @@ Constructs a relative path of the provided path in terms of an other path.
 [[list-dir]]
 ===== list-dir
 
-A helper for recursivelly list all contens of the directory. The return value of this
+A helper for recursively list all contents of the directory. The return value of this
 function is a lazy-seq.
 
-WARNING: You need to realize all the sequence in order to properly close all acquired resources for
+WARNING: You need to realise all the sequence in order to properly close all acquired resources for
 this operation, independently if you need or not all resources. If you don't want to worry about
 resource management, just coerce the value to a vector using `vec` function.
 
@@ -719,7 +719,7 @@ Optionally, you can pass a *glob expression* as second parameter for filter resu
 [[create-dir]]
 ===== create-dir
 
-A helper for create a new directory or directories. In fact this works
+A helper for creating a new directory or directories. In fact this works
 in the same way as `mkdir -p`, or in other words, it creates all not
 existing parent directories for you.
 
@@ -763,7 +763,7 @@ This is a list of available flags: `:atomic`, `:replace` and
 [[create-tempdir]]
 ===== create-tempdir
 
-Creates a temporal directory.
+Creates a temporary directory.
 
 [source, clojure]
 ----
@@ -774,14 +774,14 @@ Creates a temporal directory.
 ;; => #path "/tmp/myprefix5085100141359807070"
 ----
 
-The user of this function is responsible of removing it when it is not
+The user of this function is responsible for removing it when it is not
 longer needed.
 
 
 [[create-tempfile]]
 ===== create-tempfile
 
-Create a temporal file.
+Create a temporary file.
 
 [source, clojure]
 ----
@@ -792,7 +792,7 @@ Create a temporal file.
 ;; => #path "/tmp/test7617683814929744528.txt"
 ----
 
-The user of this function is responsible of removing it when it is not
+The user of this function is responsible for removing it when it is not
 longer needed.
 
 
