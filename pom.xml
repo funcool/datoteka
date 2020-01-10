@@ -33,7 +33,7 @@
     <dependency>
       <groupId>funcool</groupId>
       <artifactId>promesa</artifactId>
-      <version>2.0.1</version>
+      <version>5.0.0</version>
     </dependency>
   </dependencies>
   <repositories>
