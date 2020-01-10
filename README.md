@@ -7,4 +7,4 @@ A filesystem toolset and storage implementation for Clojure.
 
 ## Documentation ##
 
-http://funcool.github.io/datoteka/latest/
+https://cljdoc.org/d/funcool/datoteka/1.2.0/
