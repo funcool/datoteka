@@ -28,7 +28,7 @@ Add the following dependency to your project.clj file:
 
 [source,clojure]
 ----
-[funcool/datoteka "1.1.0"]
+[funcool/datoteka "1.2.0"]
 ----
 
 
