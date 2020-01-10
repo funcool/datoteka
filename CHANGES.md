@@ -1,5 +1,15 @@
 # Changelog #
 
+## Version 1.2.0 ##
+
+Date: 2020-01-10
+
+- Add proper coersions from Path to File.
+- Add proper coersions from File to Path.
+- Minor tooling update.
+- Update deps.
+
+
 ## Version 1.1.0 ##
 
 Date: 2019-07-09
