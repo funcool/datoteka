@@ -59,17 +59,6 @@
         ruri (st/public-url storage rpath)]
     (t/is (= (str ruri) "http://localhost:5050/test.txt"))))
 
-(t/deftest test-localfs-store-lockup-and-get-public-url-with-filename-with-spaces
-  (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
-                                :baseuri "http://localhost:5050/"
-                                :transform-filename str/slug})
-        rpath  @(st/save storage "foo bar.txt" "my content")
-        fpath @(st/lookup storage rpath)
-        fdata (slurp fpath)]
-    (t/is (= (str fpath) "/tmp/datoteka/test/foo-bar.txt"))
-    (t/is (= "my content" fdata))))
-
-
 (t/deftest test-localfs-store-and-lookup-with-subdirs
   (let [storage (local/localfs {:basedir "/tmp/datoteka/test"
                                 :baseuri "http://localhost:5050/"})

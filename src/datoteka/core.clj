@@ -370,6 +370,9 @@
   Path
   (-path [v] v)
 
+  java.io.File
+  (-path [v] (.toPath v))
+
   URI
   (-path [v] (Paths/get v))
 
@@ -381,6 +384,11 @@
     (reduce #(.resolve %1 %2)
             (pt/-path (first v))
             (map pt/-path (rest v)))))
+
+(extend-protocol io/Coercions
+  Path
+  (as-file [it] (.toFile it))
+  (as-url [it] (io/as-url (.toFile it))))
 
 (defn- path->input-stream
   [^Path path]

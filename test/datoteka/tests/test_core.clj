@@ -24,6 +24,7 @@
 
 (ns datoteka.tests.test-core
   (:require [clojure.test :as t]
+            [clojure.java.io :as io]
             [datoteka.core :as fs]))
 
 (t/deftest predicates-test
@@ -53,6 +54,10 @@
   (t/is (fs/writable? "/tmp"))
   (t/is (not (fs/writable? "/proc/cpuinfo")))
   )
+
+(t/deftest coercions
+  (t/is (fs/file? (io/as-file (fs/path "/tmp/foobar.txt"))))
+  (t/is (fs/path? (fs/path (io/as-file "/tmp/foobar.txt")))))
 
 (t/deftest path-manipulation-test
   (t/is (= (fs/path "/foo") (fs/parent "/foo/bar")))
