@@ -541,7 +541,7 @@ Checks if the provided path is readable.
 [[writable-pred]]
 ===== writable?
 
-Checks if the provided path is readable.
+Checks if the provided path is writable.
 
 [source, clojure]
 ----
@@ -677,7 +677,7 @@ A helper for normalising the path and remove redundant segments.
 
 
 [[relativize]]
-===== normalize
+===== relativize
 
 Constructs a relative path of the provided path in terms of an other path.
 
