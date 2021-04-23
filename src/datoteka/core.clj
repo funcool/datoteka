@@ -1,4 +1,4 @@
-;; Copyright (c) 2015-2017 Andrey Antukh <niwi@niwi.nz>
+;; Copyright (c) Andrey Antukh <niwi@niwi.nz>
 ;; All rights reserved.
 ;;
 ;; Redistribution and use in source and binary forms, with or without
@@ -24,15 +24,17 @@
 
 (ns datoteka.core
   "File System helpers."
-  (:refer-clojure :exclude [name])
+  (:refer-clojure :exclude [name with-open])
   (:require [datoteka.proto :as pt]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [clojure.core :as c])
   (:import java.io.Writer
            java.io.File
            java.io.InputStream
            java.net.URL
            java.net.URI
            java.io.ByteArrayInputStream
+           java.io.ByteArrayOutputStream
            java.nio.file.Path
            java.nio.file.Paths
            java.nio.file.Files
@@ -46,7 +48,8 @@
            java.nio.file.attribute.FileAttribute
            java.nio.file.attribute.PosixFilePermissions))
 
-(def ^:private empty-string-array (make-array String 0))
+(def ^:private empty-string-array
+  (make-array String 0))
 
 (extend-type String
   pt/IPath
@@ -334,8 +337,8 @@
 
 (defn slurp-bytes
   [input]
-  (with-open [input (io/input-stream (path input))
-              output (java.io.ByteArrayOutputStream. (.available input))]
+  (c/with-open [input (io/input-stream (path input))
+                output (ByteArrayOutputStream. (.available input))]
     (io/copy input output)
     (.toByteArray output)))
 
@@ -348,16 +351,6 @@
 (defmethod print-method File
   [^File v ^Writer w]
   (.write w (str "#file \"" (.toString v) "\"")))
-
-(extend-protocol pt/IContent
-  String
-  (-input-stream [v]
-    (let [data (.getBytes v "UTF-8")]
-      (ByteArrayInputStream. ^bytes data)))
-
-  Object
-  (-input-stream [v]
-    (io/input-stream v)))
 
 (extend-protocol pt/IUri
   URI
@@ -414,3 +407,21 @@
   (make-output-stream [path opts]
     (let [^OutputStream os (path->output-stream path)]
       (io/make-output-stream os opts))))
+
+(defmacro with-open
+  [bindings & body]
+  {:pre [(vector? bindings)
+         (even? (count bindings))
+         (pos? (count bindings))]}
+  (reduce (fn [acc bindings]
+            `(let ~(vec bindings)
+               (try
+                 ~acc
+                 (finally
+                   (-close ~(first bindings))))))
+          `(do ~@body)
+          (reverse (partition 2 bindings))))
+
+(extend-protocol pt/ICloseable
+  java.lang.AutoCloseable
+  (-close [this] (.close this)))

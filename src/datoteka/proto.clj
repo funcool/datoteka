@@ -31,24 +31,5 @@
 (defprotocol IPath
   (-path [_] "Coerce to path."))
 
-(defprotocol IContent
-  (-input-stream [_] "Coerce to input stream."))
-
-(defprotocol IStorage
-  "A basic abstraction for storage access."
-  (-lookup [_ path] "Resolves the path to the local filesystem.")
-  (-save [_ path content] "Persist the content under specified path.")
-  (-delete [_ path] "Delete the file by its path.")
-  (-exists? [_ path] "Check if file exists by path."))
-
-(defprotocol IClearableStorage
-  (-clear [_] "clear all contents of the storage"))
-
-(defprotocol IPublicStorage
-  (-public-uri [_ path] "Get a public accessible uri for path."))
-
-(defprotocol IStorageIntrospection
-  (-accessed-time [_ path] "Return the last accessed time of the file.")
-  (-created-time [_ path] "Return the creation time of the file.")
-  (-modified-time [_ path] "Return the last modified time of the file."))
-
+(defprotocol ICloseable
+  (-close [_] "Close the resource."))

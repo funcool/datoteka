@@ -1,5 +1,14 @@
 # Changelog #
 
+## Version 2.0.0 ##
+
+Date: 2021-04-23
+
+- Code cleaning.
+- Remove storage abstractions.
+- Add custom `with-open` macro.
+
+
 ## Version 1.2.0 ##
 
 Date: 2020-01-10

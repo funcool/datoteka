@@ -23,7 +23,6 @@
 (defn -main
   [& args]
   (require 'datoteka.tests.test-core)
-  (require 'datoteka.tests.test-storages)
   (let [{:keys [fail]} (test/run-all-tests #"^datoteka.tests.*")]
     (if (pos? fail)
       (System/exit fail)
