@@ -14,6 +14,5 @@ A filesystem toolset for Clojure:
 - IO (clojure.java.io implementation for paths).
 
 
-## Documentation ##
-
-https://cljdoc.org/d/funcool/datoteka/
+See the [documentation](https://funcool.github.io/datoteka/latest/) for
+more detailed information.
