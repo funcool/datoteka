@@ -30,6 +30,3 @@
 
 (defprotocol IPath
   (-path [_] "Coerce to path."))
-
-(defprotocol ICloseable
-  (-close [_] "Close the resource."))

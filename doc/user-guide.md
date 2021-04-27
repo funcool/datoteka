@@ -1,7 +1,7 @@
-# User Guide #
+# User Guide
 
 
-## Introduction ##
+## Introduction
 
 A filesystem toolset for Clojure:
 
@@ -10,7 +10,7 @@ A filesystem toolset for Clojure:
 - IO (clojure.java.io implementation for paths).
 
 
-## Install ##
+## Install
 
 Add the following dependency to your project.clj file:
 
@@ -19,7 +19,7 @@ funcool/datoteka {:mvn/version "RELEASE"}
 ```
 
 
-## Getting Started ##
+## Getting Started
 
 The path and filesystem helper functions are all exposed under the `datoteka.core` namespace, so let's import it:
 
@@ -74,12 +74,14 @@ have done it with `java.io.File`:
 ;; => "# do not bell on tab"
 ```
 
+See namespace reference for the whole API overview.
+
 
 ## License
 
 _datoteka_ is licensed under BSD (2-Clause) license:
 
-----
+```
 Copyright (c) Andrey Antukh <niwi@niwi.nz>
 
 All rights reserved.
@@ -104,4 +106,4 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-----
+```

@@ -59,7 +59,6 @@
 (def ^:dynamic *sep* (System/getProperty "file.separator"))
 (def ^:dynamic *home* (pt/-path (System/getProperty "user.home")))
 (def ^:dynamic *tmp-dir* (pt/-path (System/getProperty "java.io.tmpdir")))
-(def ^:dynamic *no-follow* (LinkOption/values))
 (def ^:dynamic *os-name* (System/getProperty "os.name"))
 (def ^:dynamic *system* (if (.startsWith *os-name* "Windows") :dos :unix))
 
@@ -86,6 +85,12 @@
   {:atomic StandardCopyOption/ATOMIC_MOVE
    :replace StandardCopyOption/REPLACE_EXISTING
    :copy-attributes StandardCopyOption/COPY_ATTRIBUTES})
+
+(defn- link-opts ^"[Ljava.nio.file.LinkOption;"
+  [{:keys [nofollow-links]}]
+  (if nofollow-links
+    (into-array LinkOption [LinkOption/NOFOLLOW_LINKS])
+    (into-array LinkOption [])))
 
 (defn- interpret-open-opts
   [opts]
@@ -135,20 +140,23 @@
 
 (defn exists?
   "Check if the provided path exists."
-  [path]
-  (let [^Path path (pt/-path path)]
-    (Files/exists path *no-follow*)))
+  ([path] (exists? path nil))
+  ([path params]
+   (let [^Path path (pt/-path path)]
+     (Files/exists path (link-opts params)))))
 
 (defn directory?
   "Checks if the provided path is a directory."
-  [path]
-  (let [^Path path (pt/-path path)]
-    (Files/isDirectory path *no-follow*)))
+  ([path] (directory? path nil))
+  ([path params]
+   (let [^Path path (pt/-path path)]
+     (Files/isDirectory path (link-opts params)))))
 
 (defn regular-file?
   "Checks if the provided path is a plain file."
-  [path]
-  (Files/isRegularFile (pt/-path path) *no-follow*))
+  ([path] (regular-file? path nil))
+  ([path params]
+   (Files/isRegularFile (pt/-path path) (link-opts params))))
 
 (defn link?
   "Checks if the provided path is a link."
@@ -173,10 +181,22 @@
 (defn permissions
   "Returns the string representation of the
   permissions of the provided path."
+  ([path] (permissions path nil))
+  ([path params]
+   (let [^Path path (pt/-path path)]
+     (->> (Files/getPosixFilePermissions path (link-opts params))
+          (PosixFilePermissions/toString)))))
+
+(defn ^Path real
+  "Converts f into real path via Path#toRealPath."
+  ([path] (real path nil))
+  ([path params]
+   (.toRealPath (pt/-path path) (link-opts params))))
+
+(defn absolute
+  "Return absolute path."
   [path]
-  (let [^Path path (pt/-path path)]
-    (->> (Files/getPosixFilePermissions path *no-follow*)
-         (PosixFilePermissions/toString))))
+  (.toAbsolutePath (pt/-path path)))
 
 (defn parent
   "Get parent path if it exists."
@@ -205,6 +225,11 @@
   [path]
   (some-> (last (split-ext path))
           (subs 1)))
+
+(defn base
+  "Return the base part of a file."
+  [path]
+  (first (split-ext path)))
 
 (defn normalize
   "Normalize the path."
@@ -407,21 +432,3 @@
   (make-output-stream [path opts]
     (let [^OutputStream os (path->output-stream path)]
       (io/make-output-stream os opts))))
-
-(defmacro with-open
-  [bindings & body]
-  {:pre [(vector? bindings)
-         (even? (count bindings))
-         (pos? (count bindings))]}
-  (reduce (fn [acc bindings]
-            `(let ~(vec bindings)
-               (try
-                 ~acc
-                 (finally
-                   (-close ~(first bindings))))))
-          `(do ~@body)
-          (reverse (partition 2 bindings))))
-
-(extend-protocol pt/ICloseable
-  java.lang.AutoCloseable
-  (-close [this] (.close this)))
