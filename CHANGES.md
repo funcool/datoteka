@@ -1,5 +1,16 @@
 # Changelog #
 
+## Version 3.0.63 ##
+
+Date: 2022-06-21
+
+- Remove `slurp-bytes`; it is inconsistent and does not make sense to have it.
+  Can be replaced with https://github.com/clj-commons/byte-streams:
+  Example: `(-> some-path io/input-stream bs/to-byte-array)`
+- Return unbuffered input streams on clojure.java.io protocols.
+- New helper: `tempfile` returns a tempfile candidate (without creating it).
+
+
 ## Version 2.0.0 ##
 
 Date: 2021-04-27

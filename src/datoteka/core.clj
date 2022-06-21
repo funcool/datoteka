@@ -25,28 +25,31 @@
 (ns datoteka.core
   "File System helpers."
   (:refer-clojure :exclude [name with-open])
-  (:require [datoteka.proto :as pt]
-            [clojure.java.io :as io]
-            [clojure.core :as c])
-  (:import java.io.Writer
-           java.io.File
-           java.io.InputStream
-           java.net.URL
-           java.net.URI
-           java.io.ByteArrayInputStream
-           java.io.ByteArrayOutputStream
-           java.nio.file.Path
-           java.nio.file.Paths
-           java.nio.file.Files
-           java.nio.file.LinkOption
-           java.nio.file.OpenOption
-           java.nio.file.CopyOption
-           java.nio.file.StandardOpenOption
-           java.nio.file.StandardCopyOption
-           java.nio.file.SimpleFileVisitor
-           java.nio.file.FileVisitResult
-           java.nio.file.attribute.FileAttribute
-           java.nio.file.attribute.PosixFilePermissions))
+  (:require
+   [datoteka.proto :as pt]
+   [clojure.java.io :as io]
+   [clojure.core :as c])
+  (:import
+   java.io.ByteArrayInputStream
+   java.io.ByteArrayOutputStream
+   java.io.File
+   java.io.InputStream
+   java.io.Writer
+   java.net.URI
+   java.net.URL
+   java.nio.file.CopyOption
+   java.nio.file.FileVisitResult
+   java.nio.file.Files
+   java.nio.file.LinkOption
+   java.nio.file.OpenOption
+   java.nio.file.Path
+   java.nio.file.Paths
+   java.nio.file.SimpleFileVisitor
+   java.nio.file.StandardCopyOption
+   java.nio.file.StandardOpenOption
+   java.nio.file.attribute.FileAttribute
+   java.nio.file.attribute.PosixFilePermissions
+   java.util.UUID))
 
 (def ^:private empty-string-array
   (make-array String 0))
@@ -187,7 +190,7 @@
      (->> (Files/getPosixFilePermissions path (link-opts params))
           (PosixFilePermissions/toString)))))
 
-(defn ^Path real
+(defn real
   "Converts f into real path via Path#toRealPath."
   ([path] (real path nil))
   ([path params]
@@ -360,12 +363,21 @@
   (->> (make-permissions "rwxr-xr-x")
        (Files/createTempFile prefix suffix)))
 
-(defn slurp-bytes
-  [input]
-  (c/with-open [input (io/input-stream (path input))
-                output (ByteArrayOutputStream. (.available input))]
-    (io/copy input output)
-    (.toByteArray output)))
+(defn tempfile
+  "Retrieves a candidate tempfile (without creating it)."
+  [& {:keys [suffix prefix max-retries]
+      :or {suffix ".tmp" max-retries 1000 prefix "datoteka."}}]
+  (loop [i 0]
+    (let [candidate (path *tmp-dir* (str prefix (UUID/randomUUID) suffix))]
+      (cond
+        (and (exists? candidate) (not (> i max-retries)))
+        (recur (inc i))
+
+        (> i max-retries)
+        (throw (IllegalStateException. "reached max iteration"))
+
+        :else
+        candidate))))
 
 ;; --- Implementation
 
@@ -408,12 +420,12 @@
   (as-file [it] (.toFile it))
   (as-url [it] (io/as-url (.toFile it))))
 
-(defn- path->input-stream
+(defn path->input-stream
   [^Path path]
   (let [opts (interpret-open-opts #{:read})]
     (Files/newInputStream path opts)))
 
-(defn- path->output-stream
+(defn path->output-stream
   [^Path path]
   (let [opts (interpret-open-opts #{:truncate :create :write})]
     (Files/newOutputStream path opts)))
@@ -427,8 +439,6 @@
     (let [^OutputStream os (path->output-stream path)]
       (io/make-writer os opts)))
   (make-input-stream [path opts]
-    (let [^InputStream is (path->input-stream path)]
-      (io/make-input-stream is opts)))
+    (path->input-stream path))
   (make-output-stream [path opts]
-    (let [^OutputStream os (path->output-stream path)]
-      (io/make-output-stream os opts))))
+    (path->output-stream path)))
