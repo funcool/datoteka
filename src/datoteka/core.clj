@@ -181,6 +181,11 @@
   [path]
   (Files/isWritable (pt/-path path)))
 
+(defn size
+  "Return the file size."
+  [path]
+  (-> path pt/-path Files/size))
+
 (defn permissions
   "Returns the string representation of the
   permissions of the provided path."

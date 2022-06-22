@@ -1,5 +1,11 @@
 # Changelog #
 
+## Version 3.0.64 ##
+
+Date: 2022-06-22
+
+- Add `size` helper.
+
 ## Version 3.0.63 ##
 
 Date: 2022-06-21
