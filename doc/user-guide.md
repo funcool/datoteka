@@ -21,10 +21,10 @@ funcool/datoteka {:mvn/version "RELEASE"}
 
 ## Getting Started
 
-The path and filesystem helper functions are all exposed under the `datoteka.core` namespace, so let's import it:
+The path and filesystem helper functions are all exposed under the `datoteka.fs` namespace, so let's import it:
 
 ```clojure
-(require '[datoteka.core :as fs])
+(require '[datoteka.fs :as fs])
 ```
 
 This library uses JVM NIO, so under the hood, the `java.nio.file.Path` is used instead of classical `java.io.File`.

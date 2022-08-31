@@ -11,7 +11,7 @@ A filesystem toolset for Clojure:
 
 - work with paths (creating and manipulating).
 - work with the filesystem (files and directories crud and many predicates).
-- IO (clojure.java.io implementation for paths).
+- IO (clojure.java.io implementation for paths and other utilities).
 
 
 See the [documentation](https://funcool.github.io/datoteka/latest/) for

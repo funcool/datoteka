@@ -25,7 +25,7 @@
 (ns datoteka.tests.test-core
   (:require [clojure.test :as t]
             [clojure.java.io :as io]
-            [datoteka.core :as fs]))
+            [datoteka.fs :as fs]))
 
 (t/deftest predicates-test
   (t/is (fs/path? (fs/path ".")))

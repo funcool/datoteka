@@ -22,12 +22,13 @@
 ;; OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(ns datoteka.core
-  "File System helpers. DEPRECATED: use datoteka.fs ns."
+(ns datoteka.fs
+  "File System helpers."
   (:refer-clojure :exclude [name with-open])
   (:require
    [datoteka.proto :as pt]
-   [clojure.java.io :as io]
+   [clojure.java.io :as jio]
+   [clojure.spec.alpha :as s]
    [clojure.core :as c])
   (:import
    java.io.ByteArrayInputStream
@@ -194,6 +195,12 @@
    (let [^Path path (pt/-path path)]
      (->> (Files/getPosixFilePermissions path (link-opts params))
           (PosixFilePermissions/toString)))))
+
+(defn last-modified-time
+  ([path] (last-modified-time path nil))
+  ([path params]
+   (let [^Path path (pt/-path path)]
+     (Files/getLastModifiedTime path (link-opts params)))))
 
 (defn real
   "Converts f into real path via Path#toRealPath."
@@ -420,10 +427,10 @@
             (pt/-path (first v))
             (map pt/-path (rest v)))))
 
-(extend-protocol io/Coercions
+(extend-protocol jio/Coercions
   Path
   (as-file [it] (.toFile it))
-  (as-url [it] (io/as-url (.toFile it))))
+  (as-url [it] (jio/as-url (.toFile it))))
 
 (defn path->input-stream
   [^Path path]
@@ -436,14 +443,29 @@
     (Files/newOutputStream path opts)))
 
 (extend-type Path
-  io/IOFactory
+  jio/IOFactory
   (make-reader [path opts]
     (let [^InputStream is (path->input-stream path)]
-      (io/make-reader is opts)))
+      (jio/make-reader is opts)))
   (make-writer [path opts]
     (let [^OutputStream os (path->output-stream path)]
-      (io/make-writer os opts)))
+      (jio/make-writer os opts)))
   (make-input-stream [path opts]
     (path->input-stream path))
   (make-output-stream [path opts]
     (path->output-stream path)))
+
+;; SPEC
+
+(letfn [(conformer-fn [s]
+          (cond
+            (path? s)   s
+            (string? s) (pt/-path s)
+            :else       ::s/invalid))
+        (unformer-fn [s]
+          (str s))]
+  (s/def ::path (s/conformer conformer-fn unformer-fn)))
+
+
+
+
