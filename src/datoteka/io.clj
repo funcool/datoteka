@@ -61,12 +61,12 @@
   (instance? DataOutputStream s))
 
 (defn input-stream
-  [x & opts]
-  (jio/input-stream x opts))
+  [x & {:as opts}]
+  (jio/make-input-stream x opts))
 
 (defn output-stream
-  [x & opts]
-  (jio/output-stream x opts))
+  [x & {:as opts}]
+  (jio/make-output-stream x opts))
 
 (defn resource
   ([x] (jio/resource x))
