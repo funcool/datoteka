@@ -52,6 +52,8 @@
    java.nio.file.attribute.PosixFilePermissions
    java.util.UUID))
 
+(set! *warn-on-reflection* true)
+
 (def ^:private empty-string-array
   (make-array String 0))
 
@@ -64,7 +66,8 @@
 (def ^:dynamic *home* (pt/-path (System/getProperty "user.home")))
 (def ^:dynamic *tmp-dir* (pt/-path (System/getProperty "java.io.tmpdir")))
 (def ^:dynamic *os-name* (System/getProperty "os.name"))
-(def ^:dynamic *system* (if (.startsWith *os-name* "Windows") :dos :unix))
+(def ^:dynamic *system*
+  (if (.startsWith ^String *os-name* "Windows") :dos :unix))
 
 (defn path
   "Create path from string or more than one string."
@@ -113,7 +116,7 @@
   generated from `rwxr-xr-x` kind of expressions."
   [^String expr]
   (let [perms (PosixFilePermissions/fromString expr)
-        attr (PosixFilePermissions/asFileAttribute perms)]
+        attr  (PosixFilePermissions/asFileAttribute perms)]
     (into-array FileAttribute [attr])))
 
 (defn path?
@@ -206,12 +209,13 @@
   "Converts f into real path via Path#toRealPath."
   ([path] (real path nil))
   ([path params]
-   (.toRealPath (pt/-path path) (link-opts params))))
+   (.toRealPath ^Path (pt/-path path)
+                (link-opts params))))
 
 (defn absolute
   "Return absolute path."
   [path]
-  (.toAbsolutePath (pt/-path path)))
+  (.toAbsolutePath ^Path (pt/-path path)))
 
 (defn parent
   "Get parent path if it exists."
@@ -292,7 +296,7 @@
       (if (seq p2)
         (cons p1 (list-dir-lazy-seq stream p2))
         (do
-          (.close stream)
+          (.close ^java.lang.AutoCloseable stream)
           (cons p1 nil)))))))
 
 (defn list-dir
@@ -307,8 +311,8 @@
          stream (Files/newDirectoryStream path)]
      (list-dir-lazy-seq stream)))
   ([path ^String glob]
-   (let [path (pt/-path path)
-         stream (Files/newDirectoryStream path glob)]
+   (let [path   (pt/-path path)
+         stream (Files/newDirectoryStream ^Path path glob)]
      (list-dir-lazy-seq stream))))
 
 (defn create-tempdir
@@ -427,7 +431,7 @@
 
   clojure.lang.Sequential
   (-path [v]
-    (reduce #(.resolve %1 %2)
+    (reduce #(.resolve ^Path %1 ^Path %2)
             (pt/-path (first v))
             (map pt/-path (rest v)))))
 
