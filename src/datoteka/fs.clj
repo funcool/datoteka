@@ -373,26 +373,28 @@
 
 (defn create-tempfile
   "Create a temporal file."
-  [& {:keys [suffix prefix dir]}]
-  (if dir
-    (let [dir (pt/-path dir)]
-      (->> (make-permissions "rwxr-xr-x")
-           (Files/createTempFile dir prefix suffix)))
-    (->> (make-permissions "rwxr-xr-x")
-         (Files/createTempFile prefix suffix))))
+  [& {:keys [suffix prefix dir perms]}]
+  (let [dir   (or (some-> dir path) *tmp-dir*)
+        attrs (if (string? perms)
+                (make-permissions perms)
+                (make-permissions "rwxr--r--"))]
+    (Files/createTempFile dir prefix suffix attrs)))
 
 (defn tempfile
   "Retrieves a candidate tempfile (without creating it)."
-  [& {:keys [suffix prefix max-retries]
-      :or {suffix ".tmp" max-retries 1000 prefix "datoteka."}}]
+  [& {:keys [suffix prefix max-retries dir]
+      :or {suffix ".tmp"
+           dir *tmp-dir*
+           max-retries 1000
+           prefix "datoteka."}}]
   (loop [i 0]
-    (let [candidate (path *tmp-dir* (str prefix (UUID/randomUUID) suffix))]
+    (let [candidate (path dir (str prefix (UUID/randomUUID) suffix))]
       (cond
         (and (exists? candidate) (not (> i max-retries)))
         (recur (inc i))
 
         (> i max-retries)
-        (throw (IllegalStateException. "reached max iteration"))
+        (throw (IllegalStateException. "reached max iterations"))
 
         :else
         candidate))))

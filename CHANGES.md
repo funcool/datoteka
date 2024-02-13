@@ -1,5 +1,13 @@
 # Changelog #
 
+## Version 3.1 ##
+
+- Add the ability to pass directory to `create-tempfile` and `tempfile`
+- Add print-dup impl for File and Path
+- Fix reflection warnings
+- Change create-dir call signature, it now accepts named options (only
+  affects if you pass perms)
+
 ## Version 3.0.64 ##
 
 Date: 2022-06-22
