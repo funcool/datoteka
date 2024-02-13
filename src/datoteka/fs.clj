@@ -405,9 +405,17 @@
   [^Path v ^Writer w]
   (.write w (str "#path \"" (.toString v) "\"")))
 
+(defmethod print-dup Path
+  [^Path v ^Writer w]
+  (print-method v w))
+
 (defmethod print-method File
   [^File v ^Writer w]
   (.write w (str "#file \"" (.toString v) "\"")))
+
+(defmethod print-dup File
+  [^File v ^Writer w]
+  (print-method v w))
 
 (extend-protocol pt/IUri
   URI
