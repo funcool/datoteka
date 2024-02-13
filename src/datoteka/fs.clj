@@ -371,9 +371,13 @@
 
 (defn create-tempfile
   "Create a temporal file."
-  [& {:keys [suffix prefix]}]
-  (->> (make-permissions "rwxr-xr-x")
-       (Files/createTempFile prefix suffix)))
+  [& {:keys [suffix prefix dir]}]
+  (if dir
+    (let [dir (pt/-path dir)]
+      (->> (make-permissions "rwxr-xr-x")
+           (Files/createTempFile dir prefix suffix)))
+    (->> (make-permissions "rwxr-xr-x")
+         (Files/createTempFile prefix suffix))))
 
 (defn tempfile
   "Retrieves a candidate tempfile (without creating it)."
