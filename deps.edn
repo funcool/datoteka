@@ -1,6 +1,5 @@
 {:deps
- {funcool/promesa {:mvn/version "8.0.450"}
-  commons-io/commons-io {:mvn/version "2.11.0"}}
+ {commons-io/commons-io {:mvn/version "2.15.1"}}
  :paths ["src"]
  :aliases
  {:dev
