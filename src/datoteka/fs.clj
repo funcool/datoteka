@@ -324,12 +324,10 @@
 
 (defn create-dir
   "Create a new directory."
-  ([path] (create-dir path "rwxr-xr-x"))
-  ([path perms]
-   {:pre [(string? perms)]}
-   (let [^Path path (pt/-path path)
-         attrs (make-permissions perms)]
-     (Files/createDirectories path attrs))))
+  [path & {:keys [perms] :or {perms "rwxr-xr-x"}}]
+  (let [path (pt/-path path)
+        attrs (make-permissions perms)]
+    (Files/createDirectories ^Path path attrs)))
 
 (defn- delete-recursive
   [^Path path]
