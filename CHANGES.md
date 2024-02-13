@@ -7,6 +7,8 @@
 - Fix reflection warnings
 - Change create-dir call signature, it now accepts named options (only
   affects if you pass perms)
+- Remove `tempfile`, you should be using `create-tempfile`
+- Add `delete-on-exit!` helper
 
 ## Version 3.0.64 ##
 

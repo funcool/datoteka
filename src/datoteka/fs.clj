@@ -283,9 +283,17 @@
                ^Path (pt/-path base)))
 
 (defn file
-  "Converts the path to a java.io.File instance."
+  "Create a file instance"
   [path]
-  (.toFile ^Path (pt/-path path)))
+  (cond
+    (path? path)
+    (.toFile ^Path path)
+
+    (string? path)
+    (File. ^String path)
+
+    :else
+    (file (pt/-path path))))
 
 (defn- list-dir-lazy-seq
   ([stream] (list-dir-lazy-seq stream (seq stream)))
@@ -314,13 +322,6 @@
    (let [path   (pt/-path path)
          stream (Files/newDirectoryStream ^Path path glob)]
      (list-dir-lazy-seq stream))))
-
-(defn create-tempdir
-  "Creates a temp directory on the filesystem."
-  ([]
-   (create-tempdir ""))
-  ([prefix]
-   (Files/createTempDirectory prefix (make-array FileAttribute 0))))
 
 (defn create-dir
   "Create a new directory."
@@ -371,6 +372,15 @@
          opts (interpret-copy-opts flags)]
     (Files/move src dst opts))))
 
+(defn create-tempdir
+  "Creates a temp directory on the filesystem."
+  [& {:keys [prefix dir perms] :or {prefix "" dir *tmp-dir*}}]
+  (let [dir   (if (path? dir) dir (pt/-path dir))
+        attrs (if (string? perms)
+                (make-permissions perms)
+                (make-array FileAttribute 0))]
+    (Files/createTempDirectory ^Path dir ^String prefix attrs)))
+
 (defn create-tempfile
   "Create a temporal file."
   [& {:keys [suffix prefix dir perms]}]
@@ -380,24 +390,9 @@
                 (make-permissions "rwxr--r--"))]
     (Files/createTempFile dir prefix suffix attrs)))
 
-(defn tempfile
-  "Retrieves a candidate tempfile (without creating it)."
-  [& {:keys [suffix prefix max-retries dir]
-      :or {suffix ".tmp"
-           dir *tmp-dir*
-           max-retries 1000
-           prefix "datoteka."}}]
-  (loop [i 0]
-    (let [candidate (path dir (str prefix (UUID/randomUUID) suffix))]
-      (cond
-        (and (exists? candidate) (not (> i max-retries)))
-        (recur (inc i))
-
-        (> i max-retries)
-        (throw (IllegalStateException. "reached max iterations"))
-
-        :else
-        candidate))))
+(defn delete-on-exit!
+  [path]
+  (.deleteOnExit ^File (file path)))
 
 ;; --- Implementation
 
