@@ -324,7 +324,7 @@
      (list-dir-lazy-seq stream))))
 
 (defn create-dir
-  "Create a new directory."
+  "Create a new directory with all its parents if they does not exists."
   [path & {:keys [perms] :or {perms "rwxr-xr-x"}}]
   (let [path (pt/-path path)
         attrs (make-permissions perms)]

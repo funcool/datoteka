@@ -24,7 +24,8 @@
 
 (ns datoteka.tests.test-core
   (:require [clojure.test :as t]
-            [clojure.java.io :as io]
+            [clojure.java.io :as jio]
+            [datoteka.io :as io]
             [datoteka.fs :as fs]))
 
 (t/deftest predicates-test
@@ -56,8 +57,8 @@
   )
 
 (t/deftest coercions
-  (t/is (fs/file? (io/as-file (fs/path "/tmp/foobar.txt"))))
-  (t/is (fs/path? (fs/path (io/as-file "/tmp/foobar.txt")))))
+  (t/is (fs/file? (jio/as-file (fs/path "/tmp/foobar.txt"))))
+  (t/is (fs/path? (fs/path (jio/as-file "/tmp/foobar.txt")))))
 
 (t/deftest path-manipulation-test
   (t/is (= (fs/path "/foo") (fs/parent "/foo/bar")))
@@ -68,3 +69,16 @@
   (t/is (= (fs/path "/foo/bar") (fs/path "/foo" "bar")))
   (t/is (fs/file? (fs/file "foobar")))
   )
+
+;; (t/deftest io-copy-test-1
+;;   (let [input  (byte-array [1 2 3 4 5 6 7 8 9 10])
+;;         output (with-open [is (io/bytes-input-stream input)]
+;;                  (with-open [os (io/bytes-output-stream 10)]
+;;                    (io/copy! is os)
+;;                    (io/read-as-bytes os)))
+
+;;     (t/is (= (seq input)
+;;              (seq output))))))
+
+
+
