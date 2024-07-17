@@ -398,7 +398,7 @@
 
 (defmethod print-method Path
   [^Path v ^Writer w]
-  (.write w (str "#path \"" (.toString v) "\"")))
+  (.write w (str "#java.nio/path \"" (.toString v) "\"")))
 
 (defmethod print-dup Path
   [^Path v ^Writer w]
@@ -406,7 +406,7 @@
 
 (defmethod print-method File
   [^File v ^Writer w]
-  (.write w (str "#file \"" (.toString v) "\"")))
+  (.write w (str "#java.io/file \"" (.toString v) "\"")))
 
 (defmethod print-dup File
   [^File v ^Writer w]

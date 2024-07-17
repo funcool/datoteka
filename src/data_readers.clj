@@ -1,2 +1,2 @@
-{path datoteka.core/path
- file datoteka.core/to-file}
+{java.nio/path datoteka.fs/path
+ java.io/file datoteka.fs/file}

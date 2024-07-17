@@ -1,8 +1,10 @@
 (ns user
-  (:require [clojure.tools.namespace.repl :as repl]
-            [clojure.walk :refer [macroexpand-all]]
-            [clojure.pprint :refer [pprint]]
-            [clojure.test :as test]))
+  (:require
+   [clojure.pprint :refer [pprint]]
+   [clojure.test :as test]
+   [clojure.tools.namespace.repl :as repl]
+   [clojure.walk :refer [macroexpand-all]]
+   [datoteka.fs :as fs]))
 
 ;; --- Development Stuff
 
