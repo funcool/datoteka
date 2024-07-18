@@ -24,7 +24,7 @@ funcool/datoteka
 ;; OR
 
 funcool/datoteka
-{:mvn/version "3.0.66"}
+{:mvn/version "3.1.0"}
 ```
 
 ## Getting Started

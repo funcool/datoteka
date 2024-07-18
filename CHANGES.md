@@ -9,6 +9,16 @@
   affects if you pass perms)
 - Remove `tempfile`, you should be using `create-tempfile`
 - Add `delete-on-exit!` helper
+- Add `io/coercible?` helper for check if something is implementing
+  jio/IOFactory protocol
+- Add `io/reader` and `io/writer` convencience API.
+- Expose `io/bytes-output-stream`, `io/buffered-input-stream` and
+  `io/buffered-output-stream` (that internally uses commons-io impl of
+  them that are unsynchronized, more friendly for virtual threads)
+- Replace `io/write-to-file!` with more generic `io/write!`.
+- Make `io/read-as-bytes` more generic and allow to pass size and offset.
+- Add the ability to coerce ByteArrayOutputStream to InputStream for
+  to be able to read it again.
 
 ## Version 3.0.64 ##
 
