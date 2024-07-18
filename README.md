@@ -23,8 +23,7 @@ funcool/datoteka
 
 ;; OR
 
-funcool/datoteka
-{:mvn/version "3.1.0-77"}
+nz.niwi/datoteka {:mvn/version "3.1.0-78"}
 ```
 
 ## Getting Started

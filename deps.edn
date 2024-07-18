@@ -11,7 +11,7 @@
     funcool/cuerdas             {:mvn/version "RELEASE"}}}
 
   :build
-  {:extra-deps {io.github.clojure/tools.build {:git/tag "v0.8.2" :git/sha "ba1a2bf"}}
+  {:extra-deps {io.github.clojure/tools.build {:git/tag "v0.10.5" :git/sha "2a21b7a"}}
    :ns-default build}
 
   :codox

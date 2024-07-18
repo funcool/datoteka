@@ -3,11 +3,12 @@
   (:require
    [clojure.tools.build.api :as b]))
 
-(def lib 'funcool/datoteka)
+(def lib 'nz.niwi/datoteka)
 (def version (str "3.1.0-" (b/git-count-revs nil)))
 (def class-dir "target/classes")
-(def basis (b/create-basis {:project "deps.edn"}))
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
+
+(def basis (delay (b/create-basis {:project "deps.edn"})))
 
 (defn clean [_]
   (b/delete {:path "target"}))
@@ -17,7 +18,7 @@
    {:class-dir class-dir
     :lib lib
     :version version
-    :basis basis
+    :basis @basis
     :src-dirs ["src"]})
 
   (b/copy-dir
@@ -33,6 +34,6 @@
    {:command-args ["mvn"
                    "deploy:deploy-file"
                    (str "-Dfile=" jar-file)
-                   "-DpomFile=target/classes/META-INF/maven/funcool/datoteka/pom.xml"
+                   "-DpomFile=target/classes/META-INF/maven/nz.niwi/datoteka/pom.xml"
                    "-DrepositoryId=clojars"
                    "-Durl=https://clojars.org/repo/"]}))
