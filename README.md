@@ -17,14 +17,14 @@ more detailed information.
 
 ```clojure
 funcool/datoteka
-{:git/tag "v11.0"
- :git/sha "e27eb51"
- :git/url "https://github.com/funcool/yetti.git"}
+{:git/tag "3.1.0"
+ :git/sha "d6e1119"
+ :git/url "https://github.com/funcool/datoteka.git"}
 
 ;; OR
 
 funcool/datoteka
-{:mvn/version "3.1.0"}
+{:mvn/version "3.1.0-77"}
 ```
 
 ## Getting Started
