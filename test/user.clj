@@ -4,7 +4,24 @@
    [clojure.test :as test]
    [clojure.tools.namespace.repl :as repl]
    [clojure.walk :refer [macroexpand-all]]
+   [criterium.core  :as crit]
    [datoteka.fs :as fs]))
+
+(defmacro run-quick-bench
+  [& exprs]
+  `(crit/with-progress-reporting (crit/quick-bench (do ~@exprs) :verbose)))
+
+(defmacro run-quick-bench'
+  [& exprs]
+  `(crit/quick-bench (do ~@exprs)))
+
+(defmacro run-bench
+  [& exprs]
+  `(crit/with-progress-reporting (crit/bench (do ~@exprs) :verbose)))
+
+(defmacro run-bench'
+  [& exprs]
+  `(crit/bench (do ~@exprs)))
 
 ;; --- Development Stuff
 
