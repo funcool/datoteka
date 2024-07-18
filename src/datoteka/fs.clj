@@ -443,15 +443,19 @@
   (as-file [it] (.toFile it))
   (as-url [it] (jio/as-url (.toFile it))))
 
-(defn path->input-stream
-  [^Path path]
-  (let [opts (interpret-open-opts #{:read})]
-    (Files/newInputStream path opts)))
+(def ^:private default-read-opts
+  (interpret-open-opts #{:read}))
 
-(defn path->output-stream
+(def ^:private default-write-opts
+  (interpret-open-opts #{:truncate :create :write}))
+
+(defn- path->input-stream
   [^Path path]
-  (let [opts (interpret-open-opts #{:truncate :create :write})]
-    (Files/newOutputStream path opts)))
+  (Files/newInputStream path default-read-opts))
+
+(defn- path->output-stream
+  [^Path path]
+  (Files/newOutputStream path default-write-opts))
 
 (extend-type Path
   jio/IOFactory
@@ -462,9 +466,9 @@
     (let [^OutputStream os (path->output-stream path)]
       (jio/make-writer os opts)))
   (make-input-stream [path opts]
-    (path->input-stream path))
+    (jio/make-input-stream (path->input-stream path) opts))
   (make-output-stream [path opts]
-    (path->output-stream path)))
+    (jio/make-output-stream (path->output-stream path) opts)))
 
 ;; SPEC
 

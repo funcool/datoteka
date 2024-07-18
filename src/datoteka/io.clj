@@ -43,9 +43,11 @@
    java.lang.AutoCloseable
    org.apache.commons.io.IOUtils
    org.apache.commons.io.input.BoundedInputStream
+   org.apache.commons.io.input.BoundedInputStream$Builder
    org.apache.commons.io.input.UnsynchronizedBufferedInputStream
    org.apache.commons.io.input.UnsynchronizedBufferedInputStream$Builder
    org.apache.commons.io.input.UnsynchronizedByteArrayInputStream
+   org.apache.commons.io.input.UnsynchronizedByteArrayInputStream$Builder
    org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream
    org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream$Builder))
 
@@ -131,7 +133,7 @@
   provided data."
   ^InputStream
   [^bytes data & {:keys [offset size]}]
-  (let [builder (doto (UnsynchronizedByteArrayInputStream/builder)
+  (let [builder (doto (UnsynchronizedByteArrayInputStream$Builder.)
                   (.setByteArray data))
         builder (if offset
                   (.setOffset builder (int offset))
@@ -139,24 +141,26 @@
         builder (if size
                   (.setLength builder (int size))
                   builder)]
-    (.get builder)))
+    (.get ^UnsynchronizedByteArrayInputStream$Builder builder)))
 
 (defn bytes-output-stream
   "Creates an instance of ByteArrayOutputStream."
-  ^OutputStream
+  ^UnsynchronizedByteArrayOutputStream
   [& {:keys [size]}]
-  (let [builder (UnsynchronizedByteArrayOutputStream/builder)
+  (let [builder (UnsynchronizedByteArrayOutputStream$Builder.)
         builder (if size
                   (.setBufferSize builder (int size))
                   builder)]
-     (.get ^UnsynchronizedByteArrayOutputStream$Builder builder)))
+    (.get ^UnsynchronizedByteArrayOutputStream$Builder builder)))
 
 (defn buffered-input-stream
   [input & {:keys [buffer-size] :or {buffer-size default-buffer-size}}]
-  (let [builder (doto (UnsynchronizedBufferedInputStream/builder)
-                  (.setInputStream ^InputStream input)
-                  (.setBufferSize (int buffer-size)))]
-    (.get builder)))
+  (let [builder (UnsynchronizedBufferedInputStream$Builder.)
+        builder (.setInputStream ^UnsynchronizedBufferedInputStream$Builder builder
+                                 ^InputStream input)
+        builder (.setBufferSize ^UnsynchronizedBufferedInputStream$Builder builder
+                                (int buffer-size))]
+    (.get ^UnsynchronizedBufferedInputStream$Builder builder)))
 
 (defn buffered-output-stream
   [output & {:keys [buffer-size] :or {buffer-size default-buffer-size}}]
@@ -166,11 +170,11 @@
   "Creates an instance of InputStream bounded to a specified size."
   ^InputStream
   [input size & {:keys [propagate-close] :or {propagate-close true}}]
-  (let [builder (doto (BoundedInputStream/builder)
+  (let [builder (doto (BoundedInputStream$Builder.)
                   (.setInputStream ^InputStream input)
                   (.setMaxCount (long size))
                   (.setPropagateClose (boolean propagate-close)))]
-    (.get builder)))
+    (.get ^BoundedInputStream$Builder builder)))
 
 (defn data-input-stream
   ^DataInputStream
