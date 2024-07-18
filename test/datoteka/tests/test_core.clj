@@ -70,15 +70,46 @@
   (t/is (fs/file? (fs/file "foobar")))
   )
 
-;; (t/deftest io-copy-test-1
-;;   (let [input  (byte-array [1 2 3 4 5 6 7 8 9 10])
-;;         output (with-open [is (io/bytes-input-stream input)]
-;;                  (with-open [os (io/bytes-output-stream 10)]
-;;                    (io/copy! is os)
-;;                    (io/read-as-bytes os)))
+(t/deftest io-copy-test-1
+  (let [input  (byte-array [1 2 3 4 5 6 7 8 9 10])
+        output (with-open [is (io/bytes-input-stream input)]
+                 (with-open [os (io/bytes-output-stream 10)]
+                   (io/copy! is os :size -1)
+                   (io/read-as-bytes os)))]
 
-;;     (t/is (= (seq input)
-;;              (seq output))))))
+    (t/is (= (seq input)
+             (seq output)))))
+
+(t/deftest io-copy-test-2
+  (let [input  (byte-array [1 2 3 4 5 6 7 8 9 10])
+        output (with-open [is (io/bytes-input-stream input)]
+                 (with-open [os (io/bytes-output-stream 10)]
+                   (io/copy! is os :offset 2)
+                   (io/read-as-bytes os)))]
+
+    (t/is (= (vec output)
+             [3 4 5 6 7 8 9 10]))))
+
+(t/deftest read-as-bytes-1
+  (let [input  (byte-array [1 2 3 4 5 6 7 8 9 10])
+        output (io/read-as-bytes input)]
+
+    (t/is (= (vec input)
+             (vec output)))))
+
+(t/deftest read-as-bytes-2
+  (let [input  (byte-array [1 2 3 4 5 6 7 8 9 10])
+        output (io/read-as-bytes input :size 4)]
+
+    (t/is (= (vec output)
+             [1 2 3 4]))))
+
+(t/deftest read-as-bytes-3
+  (let [input  (byte-array [1 2 3 4 5 6 7 8 9 10])
+        output (io/read-as-bytes input :offset 4 :size 2)]
+    (t/is (= (vec output)
+             [5 6]))))
+
 
 
 

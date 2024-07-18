@@ -165,11 +165,11 @@
 (defn bounded-input-stream
   "Creates an instance of InputStream bounded to a specified size."
   ^InputStream
-  [input size & {:keys [close?] :or {close? true}}]
+  [input size & {:keys [propagate-close] :or {propagate-close true}}]
   (let [builder (doto (BoundedInputStream/builder)
                   (.setInputStream ^InputStream input)
                   (.setMaxCount (long size))
-                  (.setPropagateClose (boolean close?)))]
+                  (.setPropagateClose (boolean propagate-close)))]
     (.get builder)))
 
 (defn data-input-stream
@@ -197,16 +197,14 @@
   InputStream) to the `dst` (which should be instance of
   OutputStream).
 
-  You can specify the size for delimit how much bytes should be written
-  to the `dst`."
+  You can specify the size for delimit how much bytes should be
+  written to the `dst`."
   [src dst & {:keys [offset size buffer-size]
-              :or {offset 0 buffer-size default-buffer-size}}]
+              :or {offset 0 size -1 buffer-size default-buffer-size}}]
   (let [^bytes buff (byte-array buffer-size)]
-    (if size
-      (IOUtils/copyLarge ^InputStream src ^OutputStream dst (long offset) (long size) buff)
-      (IOUtils/copyLarge ^InputStream src ^OutputStream dst buff))))
+    (IOUtils/copyLarge ^InputStream src ^OutputStream dst (long offset) (long size) buff)))
 
-(defn write-to-file!
+(defn write!
   "Writes content from `src` to the `dst`.
 
   If `dst` in an OutputStream it will be closed when copy is finished,
@@ -214,23 +212,32 @@
 
   If size is provided, no more than that bytes will be written to the
   `dst`."
-  [src dst & {:keys [size close?] :or {close? true} :as opts}]
+  [src dst & {:keys [size offset close] :or {close true} :as opts}]
   (let [^OutputStream output (jio/make-output-stream dst opts)]
     (try
       (cond
         (instance? InputStream src)
-        (copy! src output :size size)
+        (copy! src output opts)
 
         ;; A faster write operation if we already have a byte array
         ;; and we don't specify the size.
         (and (bytes? src)
-             (not size))
+             (not size)
+             (not offset))
         (do
           (IOUtils/writeChunked ^bytes src output)
           (alength ^bytes src))
 
+        (string? src)
+        (let [encoding (or (:encoding opts) "UTF-8")
+              data     (.getBytes ^String src ^String encoding)]
+          (write! data dst opts))
+
         :else
         (let [src (jio/make-input-stream src opts)
+              _   (when offset
+                    (IOUtils/skipFully ^InputStream src (long offset)))
+
               src (if size
                     (bounded-input-stream src size)
                     src)]
@@ -241,21 +248,28 @@
 
       (finally
         (flush! output)
-        (when close?
+        (when close
           (.close ^OutputStream output))))))
+
+(defn write-to-file!
+  {:deprecated true}
+  [src dst & {:as opts}]
+  (write! src dst opts))
 
 (defn read-as-bytes
   "Read all data or specified size input and return a byte array."
 
-  [input & {:keys [size close?] :or {close? true}}]
+  [input & {:keys [size offset close] :or {close true} :as opts}]
   (let [input (jio/make-input-stream input {})
+        _     (when offset
+                (IOUtils/skipFully ^InputStream input (long offset)))
         input (if size
                 (bounded-input-stream input size)
                 input)]
     (try
       (IOUtils/toByteArray ^InputStream input)
       (finally
-        (when close?
+        (when close
           (.close ^InputStream input))))))
 
 (extend UnsynchronizedByteArrayOutputStream
@@ -285,7 +299,7 @@
 (extend InputStream
   jio/IOFactory
   (assoc jio/default-streams-impl
-    :make-input-stream (fn [x opts] (buffered-input-stream x))
+    :make-input-stream (fn [x opts] (buffered-input-stream x opts))
     :make-reader (fn [^InputStream is opts]
                    (let [encoding (or (:encoding opts) "UTF-8")]
                      (-> (InputStreamReader. is ^String encoding)
