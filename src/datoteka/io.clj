@@ -244,7 +244,7 @@
 
 (defn write-to-file!
   [src dst & {:keys [close] :or {close true} :as opts}]
-  (with-open [^OutputStream output (jio/make-output-stream dst opts)]
+  (with-open [^OutputStream dst (jio/make-output-stream dst opts)]
     (write! src dst opts)))
 
 (defn skip-fully
