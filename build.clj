@@ -4,7 +4,7 @@
    [clojure.tools.build.api :as b]))
 
 (def lib 'nz.niwi/datoteka)
-(def version (str "3.1.0-" (b/git-count-revs nil)))
+(def version (str "3.2.0-" (b/git-count-revs nil)))
 (def class-dir "target/classes")
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
 
