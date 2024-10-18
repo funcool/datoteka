@@ -216,7 +216,7 @@
 
   If size is provided, no more than that bytes will be written to the
   `dst`."
-  [src dst & {:keys [size offset close] :or {close true} :as opts}]
+  [src dst & {:keys [size offset close] :or {close false} :as opts}]
   (let [^OutputStream output (jio/make-output-stream dst opts)]
     (try
       (cond
@@ -263,7 +263,7 @@
 (defn read-as-bytes
   "Read all data or specified size input and return a byte array."
 
-  [input & {:keys [size offset close] :or {close true} :as opts}]
+  [input & {:keys [size offset close] :or {close false} :as opts}]
   (let [input (jio/make-input-stream input {})
         _     (when offset
                 (IOUtils/skipFully ^InputStream input (long offset)))
