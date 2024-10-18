@@ -211,70 +211,73 @@
 (defn write!
   "Writes content from `src` to the `dst`.
 
-  If `dst` in an OutputStream it will be closed when copy is finished,
-  you can pass `:close?` option with `false` for avoid this behavior.
-
+  The `dst` argument should be an instance of OutputStream
   If size is provided, no more than that bytes will be written to the
   `dst`."
   [src dst & {:keys [size offset close] :or {close false} :as opts}]
-  (let [^OutputStream output (jio/make-output-stream dst opts)]
-    (try
-      (cond
-        (instance? InputStream src)
-        (copy! src output opts)
+  (assert (output-stream? dst) "expected instance of OutputStream for dst")
+  (try
+    (cond
+      (instance? InputStream src)
+      (copy! src dst opts)
 
-        ;; A faster write operation if we already have a byte array
-        ;; and we don't specify the size.
-        (and (bytes? src)
-             (not size)
-             (not offset))
-        (do
-          (IOUtils/writeChunked ^bytes src output)
-          (alength ^bytes src))
+      ;; A faster write operation if we already have a byte array
+      ;; and we don't specify the size.
+      (and (bytes? src)
+           (not size)
+           (not offset))
+      (do
+        (IOUtils/writeChunked ^bytes src ^OutputStream dst)
+        (alength ^bytes src))
 
-        (string? src)
-        (let [encoding (or (:encoding opts) "UTF-8")
-              data     (.getBytes ^String src ^String encoding)]
-          (write! data dst opts))
+      (string? src)
+      (let [encoding (or (:encoding opts) "UTF-8")
+            data     (.getBytes ^String src ^String encoding)]
+        (write! data dst opts))
 
-        :else
-        (let [src (jio/make-input-stream src opts)
-              _   (when offset
-                    (IOUtils/skipFully ^InputStream src (long offset)))
+      :else
+      (with-open [^InputStream input (jio/make-input-stream src opts)]
+        (copy! src dst opts)))
 
-              src (if size
-                    (bounded-input-stream src size)
-                    src)]
-          (try
-            (copy! src output)
-            (finally
-              (.close ^InputStream src)))))
-
-      (finally
-        (flush! output)
-        (when close
-          (.close ^OutputStream output))))))
+    (finally
+      (flush! dst))))
 
 (defn write-to-file!
-  {:deprecated true}
-  [src dst & {:as opts}]
-  (write! src dst opts))
+  [src dst & {:keys [close] :or {close true} :as opts}]
+  (with-open [^OutputStream output (jio/make-output-stream dst opts)]
+    (write! src dst opts)))
 
-(defn read-as-bytes
-  "Read all data or specified size input and return a byte array."
+(defn skip-fully
+  [input offset]
+  (IOUtils/skipFully ^InputStream input (long offset)))
 
-  [input & {:keys [size offset close] :or {close false} :as opts}]
-  (let [input (jio/make-input-stream input {})
-        _     (when offset
-                (IOUtils/skipFully ^InputStream input (long offset)))
-        input (if size
+(defn read!
+  "Read all data or specified size input and return a byte array.
+  The `input` parameter should be instance of InputStream"
+  [input & {:keys [size]}]
+  (assert (input-stream? input) "expected InputStream instance for `input`")
+  (let [input (if size
                 (bounded-input-stream input size)
                 input)]
-    (try
-      (IOUtils/toByteArray ^InputStream input)
-      (finally
-        (when close
-          (.close ^InputStream input))))))
+    (IOUtils/toByteArray ^InputStream input)))
+
+(defn read-to-buffer!
+  "Read all data or specified size input and return a byte array.
+  The `input` parameter should be instance of InputStream"
+  [input buffer & {:keys [size offset]}]
+  (assert (input-stream? input) "expected InputStream instance for `input`")
+
+  (let [size   (or size (alength ^bytes buffer))
+        offset (or offset 0)]
+    (IOUtils/read ^InputStream input
+                  ^bytes buffer
+                  (int offset)
+                  (int size))))
+
+
+(defn read-as-bytes
+  [input & {:as opts}]
+  (read! input opts))
 
 (extend UnsynchronizedByteArrayOutputStream
   jio/IOFactory
