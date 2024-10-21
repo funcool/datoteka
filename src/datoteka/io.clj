@@ -234,7 +234,7 @@
       (string? content)
       (let [encoding (or (:encoding opts) "UTF-8")
             data     (.getBytes ^String content ^String encoding)]
-        (write data dst opts))
+        (write dst data opts))
 
       :else
       (with-open [^InputStream input (jio/make-input-stream content opts)]
@@ -244,9 +244,9 @@
       (flush dst))))
 
 (defn write-to-file
-  [src dst & {:keys [close] :or {close true} :as opts}]
+  [dst content & {:as opts}]
   (with-open [^OutputStream dst (jio/make-output-stream dst opts)]
-    (write src dst opts)))
+    (write dst content opts)))
 
 (defn skip
   [input offset]
