@@ -1,5 +1,13 @@
 # Changelog #
 
+## Version 4.0 ##
+
+- Stabilize datoteka.io API:
+  - Remove `!` from functions for make it similar to clojure.java.io api
+  - Reorder some parameters for make the api consistent
+  - Replace syncrhonized Input and Output streams with unsynchronizedd
+    version from apache commons-io
+
 ## Version 3.1 ##
 
 - Add the ability to pass directory to `create-tempfile` and `tempfile`

@@ -23,7 +23,8 @@
 ;; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (ns datoteka.io
-  "IO helpers (experimental, changes expected)."
+  "IO helpers (a wrapper for clojure.java.io namespace)"
+  (:refer-clojure :exclude [read flush])
   (:require
    [clojure.core :as c]
    [clojure.java.io :as jio]
@@ -186,17 +187,17 @@
   [output]
   (DataOutputStream. ^OutputStream output))
 
-(defn close!
+(defn close
   "Close any AutoCloseable resource."
   [^AutoCloseable stream]
   (.close stream))
 
-(defn flush!
+(defn flush
   "Flush the OutputStream"
   [^OutputStream stream]
   (.flush stream))
 
-(defn copy!
+(defn copy
   "Efficiently copy data from `src` (should be instance of
   InputStream) to the `dst` (which should be instance of
   OutputStream).
@@ -208,50 +209,50 @@
   (let [^bytes buff (byte-array buffer-size)]
     (IOUtils/copyLarge ^InputStream src ^OutputStream dst (long offset) (long size) buff)))
 
-(defn write!
+(defn write
   "Writes content from `src` to the `dst`.
 
   The `dst` argument should be an instance of OutputStream
   If size is provided, no more than that bytes will be written to the
   `dst`."
-  [src dst & {:keys [size offset close] :or {close false} :as opts}]
+  [dst content & {:keys [size offset close] :or {close false} :as opts}]
   (assert (output-stream? dst) "expected instance of OutputStream for dst")
   (try
     (cond
-      (instance? InputStream src)
-      (copy! src dst opts)
+      (instance? InputStream content)
+      (copy content dst opts)
 
       ;; A faster write operation if we already have a byte array
       ;; and we don't specify the size.
-      (and (bytes? src)
+      (and (bytes? content)
            (not size)
            (not offset))
       (do
-        (IOUtils/writeChunked ^bytes src ^OutputStream dst)
-        (alength ^bytes src))
+        (IOUtils/writeChunked ^bytes content ^OutputStream dst)
+        (alength ^bytes content))
 
-      (string? src)
+      (string? content)
       (let [encoding (or (:encoding opts) "UTF-8")
-            data     (.getBytes ^String src ^String encoding)]
-        (write! data dst opts))
+            data     (.getBytes ^String content ^String encoding)]
+        (write data dst opts))
 
       :else
-      (with-open [^InputStream input (jio/make-input-stream src opts)]
-        (copy! src dst opts)))
+      (with-open [^InputStream input (jio/make-input-stream content opts)]
+        (copy input dst opts)))
 
     (finally
-      (flush! dst))))
+      (flush dst))))
 
-(defn write-to-file!
+(defn write-to-file
   [src dst & {:keys [close] :or {close true} :as opts}]
   (with-open [^OutputStream dst (jio/make-output-stream dst opts)]
-    (write! src dst opts)))
+    (write src dst opts)))
 
-(defn skip-fully
+(defn skip
   [input offset]
   (IOUtils/skipFully ^InputStream input (long offset)))
 
-(defn read!
+(defn read
   "Read all data or specified size input and return a byte array.
   The `input` parameter should be instance of InputStream"
   [input & {:keys [size]}]
@@ -261,7 +262,7 @@
                 input)]
     (IOUtils/toByteArray ^InputStream input)))
 
-(defn read-to-buffer!
+(defn read-to-buffer
   "Read all data or specified size input and return a byte array.
   The `input` parameter should be instance of InputStream"
   [input buffer & {:keys [size offset]}]
@@ -273,11 +274,6 @@
                   ^bytes buffer
                   (int offset)
                   (int size))))
-
-
-(defn read-as-bytes
-  [input & {:as opts}]
-  (read! input opts))
 
 (extend UnsynchronizedByteArrayOutputStream
   jio/IOFactory
