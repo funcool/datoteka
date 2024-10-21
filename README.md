@@ -18,7 +18,7 @@ more detailed information.
 ```clojure
 funcool/datoteka
 {:git/tag "4.0.0"
- :git/sha "ce1cd56"
+ :git/sha "3372f3a"
  :git/url "https://github.com/funcool/datoteka.git"}
 ```
 
