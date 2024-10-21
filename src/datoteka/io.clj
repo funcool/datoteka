@@ -243,7 +243,9 @@
     (finally
       (flush dst))))
 
-(defn write-to-file
+(defn write*
+  "A specialized version of `write` that coerces `dst` to a output
+  stream and closes it once all content is written"
   [dst content & {:as opts}]
   (with-open [^OutputStream dst (jio/make-output-stream dst opts)]
     (write dst content opts)))
@@ -261,6 +263,13 @@
                 (bounded-input-stream input size)
                 input)]
     (IOUtils/toByteArray ^InputStream input)))
+
+(defn read*
+  "A specialized version of `read` that coerces `input` to an
+  InputStream and closes it once the data is read."
+  [input & {:keys [size] :as opts}]
+  (with-open [^InputStream input (jio/make-input-stream input opts)]
+    (read input opts)))
 
 (defn read-to-buffer
   "Read all data or specified size input and return a byte array.
